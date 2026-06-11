@@ -64,3 +64,13 @@ model Roadmap {
   generatedAt   DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+model ResumeAnalysis {
+  id            String   @id @default(cuid())
+  userId        String
+  fileName      String
+  fileUrl       String
+  extractedText String   @db.Text
+  analysisJson  Json
+  createdAt     DateTime @default(now())
+}
