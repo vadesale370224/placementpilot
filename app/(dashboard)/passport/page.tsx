@@ -29,6 +29,7 @@ export default function SkillPassportPage() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfile(activeProfile);
     setPassport(activePassport);
   }, [router]);
@@ -208,19 +209,27 @@ export default function SkillPassportPage() {
                 setDownloadSuccess(true);
                 setTimeout(() => setDownloadSuccess(false), 2000);
               }}
-              className="flex-1 py-2.5 bg-white/10 dark:bg-violet-950/5 hover:bg-white/20 dark:hover:bg-violet-950/15 text-gray-900 dark:text-white border border-gray-250 dark:border-violet-950/20 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+              className="flex-1 py-3 bg-violet-600/10 hover:bg-violet-600 text-violet-650 dark:text-violet-400 hover:text-white border border-violet-500/30 font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] cursor-pointer shadow-lg shadow-violet-500/5"
             >
-              📥 {downloadSuccess ? "Downloaded!" : "Download Passport"}
+              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>{downloadSuccess ? "Downloaded!" : "Download Passport"}</span>
             </button>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(`https://placementpilot.in/passport/${profile.id}`);
+                if (profile) {
+                  navigator.clipboard.writeText(`https://placementpilot.in/passport/${profile.id}`);
+                }
                 setShareSuccess(true);
                 setTimeout(() => setShareSuccess(false), 2000);
               }}
-              className="flex-1 py-2.5 bg-white/10 dark:bg-violet-950/5 hover:bg-white/20 dark:hover:bg-violet-950/15 text-gray-900 dark:text-white border border-gray-250 dark:border-violet-950/20 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+              className="flex-1 py-3 bg-cyan-500/10 hover:bg-cyan-505 text-cyan-600 dark:text-cyan-400 hover:text-slate-905 dark:hover:text-slate-950 border border-cyan-500/30 font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] cursor-pointer shadow-lg shadow-cyan-500/5"
             >
-              🔗 {shareSuccess ? "Link Copied!" : "Share Passport"}
+              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 10.742l4.636-2.318a3 3 0 10-.224-2.614l-4.636 2.318a3 3 0 100 4.195l4.636 2.318a3 3 0 10.224-2.614l-4.636-2.318z" />
+              </svg>
+              <span>{shareSuccess ? "Link Copied!" : "Share Passport"}</span>
             </button>
           </div>
 

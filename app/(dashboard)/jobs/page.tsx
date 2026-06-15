@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { dbMock, MockProfile, MockSkillPassport, MockJobListing, MockApplication } from "@/lib/dbMock";
+import { dbMock, MockProfile, MockJobListing, MockApplication } from "@/lib/dbMock";
 
 interface EnrichedJobMatch {
   job: MockJobListing;
@@ -17,15 +17,25 @@ interface EnrichedJobMatch {
   isApplied: boolean;
 }
 
+function generateAppId(): string {
+  return "app-" + Math.random().toString(36).substring(2, 9);
+}
+
 export default function JobMatchesPage() {
   const t = useTranslations("jobs");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [profile, setProfile] = useState<MockProfile | null>(null);
-  const [passport, setPassport] = useState<MockSkillPassport | null>(null);
   const [matches, setMatches] = useState<EnrichedJobMatch[]>([]);
   const [loading, setLoading] = useState(true);
-  const [appliedJobIds, setAppliedJobIds] = useState<string[]>([]);
+
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+  const [salaryFilter, setSalaryFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [minMatchScore, setMinMatchScore] = useState(0);
 
   useEffect(() => {
     const activeProfile = dbMock.getProfile();
@@ -36,11 +46,16 @@ export default function JobMatchesPage() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfile(activeProfile);
-    setPassport(activePassport);
+
+    // Read default filter query param if present
+    const filterQuery = searchParams.get("filter");
+    if (filterQuery === "recommended") {
+      setMinMatchScore(70);
+    }
 
     const apps = dbMock.getApplications();
-    setAppliedJobIds(apps.map(a => a.jobId));
 
     const jobs = dbMock.getJobListings();
     const computedMatches: EnrichedJobMatch[] = jobs.map((job) => {
@@ -60,12 +75,12 @@ export default function JobMatchesPage() {
                          activeProfile.state.toLowerCase().includes(job.location.toLowerCase()) ||
                          activeProfile.state === "Maharashtra" && (job.location === "Mumbai" || job.location === "Pune" || job.location === "Nagpur");
 
-      let skillScore = job.requirements.length > 0 ? (skillsMatched.length / job.requirements.length) * 50 : 50;
-      let langScore = job.requiredLanguages.length > 0 ? (languagesMatched.length / job.requiredLanguages.length) * 30 : 30;
-      let locationScore = stateMatch ? 20 : 5;
+      const skillScore = job.requirements.length > 0 ? (skillsMatched.length / job.requirements.length) * 50 : 50;
+      const langScore = job.requiredLanguages.length > 0 ? (languagesMatched.length / job.requiredLanguages.length) * 30 : 30;
+      const locationScore = stateMatch ? 20 : 5;
       const finalScore = Math.round(skillScore + langScore + locationScore);
 
-      const langNames = { en: "English", hi: "Hindi", mr: "Marathi" } as any;
+      const langNames: Record<string, string> = { en: "English", hi: "Hindi", mr: "Marathi" };
       const matchedLangList = languagesMatched.map(l => langNames[l] || l).join(", ");
 
       let explanation = "";
@@ -99,13 +114,13 @@ export default function JobMatchesPage() {
     computedMatches.sort((a, b) => b.score - a.score);
     setMatches(computedMatches);
     setLoading(false);
-  }, [router]);
+  }, [router, searchParams]);
 
   const handleApply = (jobId: string) => {
     if (!profile) return;
 
     const newApp: MockApplication = {
-      id: "app-" + Math.random().toString(36).substring(2, 9),
+      id: generateAppId(),
       jobId,
       jobSeekerId: profile.id,
       status: "PENDING",
@@ -113,12 +128,32 @@ export default function JobMatchesPage() {
     };
     dbMock.saveApplication(newApp);
 
-    setAppliedJobIds(prev => [...prev, jobId]);
-    
     setMatches(prev => 
       prev.map(m => m.job.id === jobId ? { ...m, isApplied: true } : m)
     );
   };
+
+  const filteredMatches = matches.filter(m => {
+    const matchesSearch = m.job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          m.job.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          m.job.description.toLowerCase().includes(searchTerm.toLowerCase());
+                          
+    const matchesLocation = locationFilter === "" || m.job.location.toLowerCase().includes(locationFilter.toLowerCase());
+    const matchesRole = roleFilter === "" || m.job.title.toLowerCase().includes(roleFilter.toLowerCase()) || m.job.description.toLowerCase().includes(roleFilter.toLowerCase());
+    const matchesMatch = m.score >= minMatchScore;
+    
+    let matchesSalary = true;
+    if (salaryFilter !== "") {
+      const minSalVal = parseInt(salaryFilter);
+      const digits = m.job.salary.replace(/[^0-9]/g, "");
+      const jobMinSal = parseInt(digits.substring(0, 5)) || 0;
+      if (jobMinSal > 0 && jobMinSal < minSalVal) {
+        matchesSalary = false;
+      }
+    }
+    
+    return matchesSearch && matchesLocation && matchesRole && matchesMatch && matchesSalary;
+  });
 
   if (loading || !profile) {
     return (
@@ -133,19 +168,98 @@ export default function JobMatchesPage() {
       {/* Header */}
       <div className="border-b border-gray-200 dark:border-violet-950/20 pb-6">
         <h1 className="text-3xl font-black bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
-          {t("title")}
+          Jobs Recommended For You
         </h1>
         <p className="text-gray-550 dark:text-gray-400 mt-1 font-semibold text-sm">
           {t("subtitle")}
         </p>
       </div>
 
+      {/* Advanced Filter Panel */}
+      <div className="glass-panel p-6 rounded-3xl space-y-4 max-w-4xl border border-white/5 bg-white/[0.01]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Search bar */}
+          <div className="flex flex-col gap-1.5 col-span-1 sm:col-span-2">
+            <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest font-mono">Search keyword</span>
+            <input 
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="e.g. Electrician, Shree, L&T..."
+              className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs font-semibold outline-none focus:border-violet-500"
+            />
+          </div>
+
+          {/* Location filter */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest font-mono">Location</span>
+            <input 
+              type="text"
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+              placeholder="e.g. Pune, Mumbai..."
+              className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs font-semibold outline-none focus:border-violet-500"
+            />
+          </div>
+
+          {/* Role filter */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest font-mono">Role Category</span>
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs font-bold outline-none cursor-pointer focus:border-violet-500"
+            >
+              <option value="">All Categories</option>
+              <option value="electrician">Electrician</option>
+              <option value="welder">Welder</option>
+              <option value="retail">Retail</option>
+              <option value="support">Customer Support</option>
+              <option value="delivery">Delivery</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {/* Salary threshold */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest font-mono">Min Salary (Monthly)</span>
+            <select
+              value={salaryFilter}
+              onChange={(e) => setSalaryFilter(e.target.value)}
+              className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs font-bold outline-none cursor-pointer focus:border-violet-500"
+            >
+              <option value="">No Minimum</option>
+              <option value="15000">₹15,000 / month</option>
+              <option value="18000">₹18,000 / month</option>
+              <option value="20000">₹20,000 / month</option>
+              <option value="22000">₹22,000 / month</option>
+            </select>
+          </div>
+
+          {/* Min Match % */}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-violet-400 uppercase tracking-widest font-mono">Minimum AI Match Strength</span>
+            <select
+              value={minMatchScore.toString()}
+              onChange={(e) => setMinMatchScore(parseInt(e.target.value))}
+              className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs font-bold outline-none cursor-pointer focus:border-violet-500"
+            >
+              <option value="0">All Match levels</option>
+              <option value="70">Above 70% Match</option>
+              <option value="80">Above 80% Match</option>
+              <option value="90">Above 90% Match</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       {/* Matches List */}
       <div className="max-w-4xl space-y-6">
-        {matches.length === 0 ? (
-          <p className="text-center py-12 text-gray-550">{t("noMatches")}</p>
+        {filteredMatches.length === 0 ? (
+          <p className="text-center py-12 text-gray-500 font-bold">No jobs match your search parameters. Try resetting filters.</p>
         ) : (
-          matches.map((match) => (
+          filteredMatches.map((match) => (
             <div
               key={match.job.id}
               className="glass-card rounded-3xl p-6 shadow-sm border border-gray-200 dark:border-gray-850 hover:border-violet-400 dark:hover:border-violet-900 transition-all duration-300 space-y-4"
@@ -181,15 +295,15 @@ export default function JobMatchesPage() {
 
               {/* Metadata Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-1.5 text-xs">
-                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-150 dark:border-gray-800 rounded-2xl space-y-1">
+                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-155 dark:border-gray-800 rounded-2xl space-y-1">
                   <span className="text-gray-400 font-bold block text-[10px] uppercase font-mono tracking-wider">📍 Location</span>
                   <span className="font-extrabold text-gray-800 dark:text-gray-200">{match.job.location}</span>
                 </div>
-                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-150 dark:border-gray-800 rounded-2xl space-y-1">
+                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-155 dark:border-gray-800 rounded-2xl space-y-1">
                   <span className="text-gray-400 font-bold block text-[10px] uppercase font-mono tracking-wider">💰 Salary Range</span>
                   <span className="font-extrabold text-emerald-500">{match.job.salary}</span>
                 </div>
-                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-150 dark:border-gray-800 rounded-2xl space-y-1">
+                <div className="p-3 bg-white/40 dark:bg-black/10 border border-gray-155 dark:border-gray-800 rounded-2xl space-y-1">
                   <span className="text-gray-400 font-bold block text-[10px] uppercase font-mono tracking-wider">🗣️ Required Languages</span>
                   <div className="flex gap-1.5 mt-1">
                     {match.job.requiredLanguages.map((lang) => (
@@ -203,7 +317,7 @@ export default function JobMatchesPage() {
 
               {/* AI Explanation Box */}
               <div className="p-4 bg-violet-50/50 dark:bg-violet-950/10 border border-violet-100/50 dark:border-violet-900/30 rounded-2xl space-y-2">
-                <h4 className="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                <h4 className="text-[10px] font-black text-violet-650 dark:text-violet-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
                   💡 {t("explanationTitle")}
                 </h4>
                 <div className="text-xs text-violet-900/90 dark:text-violet-300 font-bold space-y-1.5 leading-relaxed">

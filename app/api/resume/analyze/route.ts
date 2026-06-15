@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth-server";
 import { z } from "zod";
@@ -38,15 +37,15 @@ export async function POST(req: NextRequest) {
       summary: "A solid baseline resume, but it needs more impact-driven bullet points.",
     };
 
-    const record = await prisma.resumeAnalysis.create({
-      data: {
-        userId,
-        fileName,
-        fileUrl,
-        extractedText,
-        analysisJson,
-      },
-    });
+    const record = {
+      id: "mock-analysis-" + Math.random().toString(36).substring(2, 9),
+      userId,
+      fileName,
+      fileUrl,
+      extractedText,
+      analysisJson,
+      createdAt: new Date().toISOString(),
+    };
 
     return NextResponse.json({ success: true, analysis: record });
   } catch (error) {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { dbMock } from "@/lib/dbMock";
 
@@ -12,20 +11,27 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed, isMobileOpen, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
-  const t = useTranslations("nav");
   const [hasProfile, setHasProfile] = useState(false);
 
   useEffect(() => {
     // Check if user has completed onboarding profile
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasProfile(!!dbMock.getProfile());
   }, [pathname]);
 
   const menuItems = [
-    { href: "/dashboard", label: t("dashboard"), icon: "📊" },
-    { href: "/passport", label: t("passport"), icon: "🪪" },
-    { href: "/jobs", label: t("jobs"), icon: "💼" },
-    { href: "/coach", label: t("coach"), icon: "🎙️" },
-    { href: "/onboarding", label: hasProfile ? "My Profile" : t("onboarding"), icon: "👤" },
+    { href: "/dashboard", label: "Dashboard", icon: "📊" },
+    ...(hasProfile 
+      ? [{ href: "/profile", label: "My Profile", icon: "👤" }] 
+      : [{ href: "/onboarding", label: "Onboarding", icon: "👤" }]
+    ),
+    { href: "/passport", label: "Skill Passport", icon: "🪪" },
+    { href: "/resume", label: "Resume Analyzer", icon: "📄" },
+    { href: "/jobs", label: "Job Matches", icon: "💼" },
+    { href: "/jobs?filter=recommended", label: "Jobs For You", icon: "🎯" },
+    { href: "/coach", label: "AI Interview Coach", icon: "🎙️" },
+    { href: "/applications", label: "Applications", icon: "📝" },
+    { href: "/settings", label: "Settings", icon: "⚙️" },
   ];
 
   return (

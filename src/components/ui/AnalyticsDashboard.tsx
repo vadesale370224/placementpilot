@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { dbMock } from "@/lib/dbMock";
-import { motion } from "framer-motion";
 
 interface MLReadinessData {
   score: number;
@@ -210,8 +209,9 @@ export default function AnalyticsDashboard() {
         setSkillGap(gapRes);
         setInterview(interviewRes);
         setSpeech(speechRes);
-      } catch (err: any) {
-        setError(err.message || "Failed to load ML reports.");
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        setError(errMsg || "Failed to load ML reports.");
       } finally {
         setLoading(false);
       }

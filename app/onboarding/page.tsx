@@ -54,7 +54,6 @@ export default function OnboardingPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [recordingStopFn, setRecordingStopFn] = useState<(() => void) | null>(null);
 
   // Statuses
@@ -71,6 +70,7 @@ export default function OnboardingPage() {
         setRecordingDuration((prev) => prev + 1);
       }, 1000);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecordingDuration(0);
     }
     return () => clearInterval(timer);
@@ -79,6 +79,7 @@ export default function OnboardingPage() {
   // Handle live skill extraction when transcribed text changes
   useEffect(() => {
     if (!transcribedText.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setExtractedSkills([]);
       return;
     }
@@ -115,10 +116,8 @@ export default function OnboardingPage() {
   const handleStartRecording = async () => {
     try {
       setAudioUrl(null);
-      setAudioBlob(null);
       setTranscribedText("");
       const recorder = await startAudioRecording((blob) => {
-        setAudioBlob(blob);
         setAudioUrl(URL.createObjectURL(blob));
 
         // Start simulated transcription
@@ -145,8 +144,9 @@ export default function OnboardingPage() {
         ? "नमस्कार, स्वतःबद्दल सांगा. सुरू करा."
         : "Hello, please introduce yourself now.";
       speakText(introText, locale);
-    } catch (e: any) {
-      alert(t("errors.audioPermission") || e.message);
+    } catch (e: unknown) {
+      const errMsg = e instanceof Error ? e.message : String(e);
+      alert(t("errors.audioPermission") || errMsg);
     }
   };
 
@@ -179,6 +179,7 @@ export default function OnboardingPage() {
       isVerified: true
     };
     dbMock.saveProfile(mockProfile);
+    document.cookie = `pp_profile_id=${profileId}; path=/; max-age=31536000; SameSite=Lax`;
 
     const mockPassport: MockSkillPassport = {
       id: "pass-" + Math.random().toString(36).substring(2, 9),

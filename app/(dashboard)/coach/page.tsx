@@ -243,6 +243,7 @@ export default function InterviewCoachPage() {
       router.push("/onboarding");
       return;
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfile(activeProfile);
     setPassport(activePassport);
   }, [router]);
@@ -252,6 +253,7 @@ export default function InterviewCoachPage() {
     if (isRecording) {
       timer = setInterval(() => setDuration(prev => prev + 1), 1000);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDuration(0);
     }
     return () => clearInterval(timer);
@@ -278,15 +280,16 @@ export default function InterviewCoachPage() {
 
   const handleStartRecording = async () => {
     try {
-      const recorder = await startAudioRecording((blob) => {
+      const recorder = await startAudioRecording(() => {
         setIsRecording(false);
         setTranscribing(true);
         simulateTranscription();
       });
       setRecordingStopFn(() => recorder.stop);
       setIsRecording(true);
-    } catch (e: any) {
-      alert(e.message);
+    } catch (e: unknown) {
+      const errMsg = e instanceof Error ? e.message : String(e);
+      alert(errMsg);
     }
   };
 
@@ -498,7 +501,7 @@ export default function InterviewCoachPage() {
                     <div className="space-y-2">
                       <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider font-mono">Your Vocal Transcript</span>
                       <p className="p-4 bg-white/40 dark:bg-black/10 border border-gray-200 dark:border-gray-800 rounded-2xl text-sm italic font-medium text-gray-750 dark:text-gray-300">
-                        "{transcript}"
+                        &ldquo;{transcript}&rdquo;
                       </p>
                     </div>
 

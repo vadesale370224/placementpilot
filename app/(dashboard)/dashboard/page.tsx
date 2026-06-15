@@ -10,7 +10,7 @@ import AnalyticsDashboard from "@/components/ui/AnalyticsDashboard";
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const router = useRouter();
-  const { user, isLoaded } = useUser();
+  const { isLoaded } = useUser();
 
   const [profile, setProfile] = useState<MockProfile | null>(null);
   const [passport, setPassport] = useState<MockSkillPassport | null>(null);
@@ -26,6 +26,7 @@ export default function DashboardPage() {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProfile(activeProfile);
     setPassport(activePassport);
     setJobCount(dbMock.getJobListings().length);

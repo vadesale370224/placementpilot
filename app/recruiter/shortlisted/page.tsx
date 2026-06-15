@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function RecruiterShortlistedPage() {
-  const router = useRouter();
 
   const [shortlisted, setShortlisted] = useState([
     { id: "c1", name: "Rahul Ghadge", role: "ITI Electrician", readiness: 75, date: "06/15/2026" },

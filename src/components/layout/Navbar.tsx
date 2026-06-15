@@ -5,13 +5,11 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { setLocale } from "@/lib/i18n";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { dbMock } from "@/lib/dbMock";
 
 export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const t = useTranslations("nav");
   const locale = useLocale();
-  const router = useRouter();
   const [showJudgeConsole, setShowJudgeConsole] = useState(false);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -21,12 +19,14 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
   const handlePreloadDemo = () => {
     dbMock.preloadDemoData();
     document.cookie = `NEXT_LOCALE=mr; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `pp_profile_id=prof-demo-iti; path=/; max-age=31536000; SameSite=Lax`;
     setShowJudgeConsole(false);
     window.location.href = "/passport";
   };
 
   const handleClearData = () => {
     dbMock.clearAll();
+    document.cookie = "pp_profile_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
     setShowJudgeConsole(false);
     window.location.href = "/onboarding";
   };
@@ -56,7 +56,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
             {/* Judge Demo Console Trigger */}
             <button
               onClick={() => setShowJudgeConsole(!showJudgeConsole)}
-              className="px-3.5 py-1.5 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 hover:from-violet-700 hover:to-cyan-600 text-white font-extrabold rounded-full text-[11px] sm:text-xs shadow-lg shadow-violet-500/10 hover:scale-[1.03] active:scale-[0.97] transition flex items-center gap-1 cursor-pointer"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 hover:from-violet-750 hover:to-cyan-600 text-white font-extrabold rounded-full text-[11px] sm:text-xs shadow-lg shadow-violet-500/10 hover:scale-[1.03] active:scale-[0.97] transition flex items-center gap-1 cursor-pointer"
             >
               🚀 Judge Console
             </button>
@@ -88,7 +88,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
       {showJudgeConsole && (
         <div className="absolute top-18 right-4 w-80 sm:w-96 glass-panel border border-violet-500/20 dark:border-violet-500/30 rounded-3xl shadow-2xl p-6 text-gray-900 dark:text-white space-y-4 animate-fadeIn">
           <div className="flex justify-between items-center border-b border-gray-150 dark:border-gray-850 pb-3">
-            <h3 className="font-extrabold text-sm sm:text-base flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent dark:from-violet-400 dark:to-blue-400">
+            <h3 className="font-extrabold text-sm sm:text-base flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent dark:from-violet-400 dark:to-blue-450">
               🧭 Judge Demo Console
             </h3>
             <button
@@ -106,7 +106,7 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
           <div className="grid grid-cols-2 gap-3 pb-1">
             <button
               onClick={handlePreloadDemo}
-              className="py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white font-bold rounded-2xl text-xs shadow-md transition cursor-pointer"
+              className="py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-750 hover:to-blue-750 text-white font-bold rounded-2xl text-xs shadow-md transition cursor-pointer"
             >
               🚀 Preload Demo User
             </button>
@@ -145,13 +145,13 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
               <div className="flex gap-2">
                 <span className="text-violet-500 font-black">4.</span>
                 <span className="text-gray-600 dark:text-gray-300">
-                  Navigate to **Interview Coach** and start the Electrician session. Click "Speak Answer" to see technical feedback.
+                  Navigate to **Interview Coach** and start the Electrician session. Click &ldquo;Speak Answer&rdquo; to see technical feedback.
                 </span>
               </div>
               <div className="flex gap-2">
                 <span className="text-violet-500 font-black">5.</span>
                 <span className="text-gray-600 dark:text-gray-300">
-                  Click "Finish" to view your <strong>Readiness Score</strong> boost to <strong>85%</strong>!
+                  Click &ldquo;Finish&rdquo; to view your <strong>Readiness Score</strong> boost to <strong>85%</strong>!
                 </span>
               </div>
             </div>

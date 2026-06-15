@@ -33,7 +33,7 @@ export default function RecruiterPostJobPage() {
             <span className="text-5xl mb-4">🎉</span>
             <h3 className="text-2xl font-black text-white">Job Posted Successfully!</h3>
             <p className="text-gray-400 text-sm font-semibold mt-2">
-              Semantic algorithms will analyze candidates' Skill Passports now.
+              Semantic algorithms will analyze candidates&apos; Skill Passports now.
             </p>
           </div>
         )}
