@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { dbMock } from "@/lib/dbMock";
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const router = useRouter();
@@ -36,6 +36,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
+            {onToggleSidebar && (
+              <button
+                onClick={onToggleSidebar}
+                className="p-2 mr-3 rounded-xl bg-gray-50/50 dark:bg-violet-950/5 hover:bg-gray-100 dark:hover:bg-violet-950/15 border border-gray-200 dark:border-violet-950/20 text-gray-700 dark:text-gray-300 transition cursor-pointer"
+                title="Toggle Navigation"
+              >
+                ☰
+              </button>
+            )}
             <Link href="/" className="flex-shrink-0 flex items-center gap-2 hover:opacity-95 transition-opacity">
               <span className="text-xl font-black bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
                 PlacementPilot 🧭
