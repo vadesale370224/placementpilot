@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth-server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 

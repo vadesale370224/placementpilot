@@ -16,6 +16,8 @@
     "framer-motion": "^12.40.0",
     "mammoth": "^1.12.0",
     "next": "16.2.7",
+    "next-intl": "^4.13.0",
+    "openai": "^6.42.0",
     "pdf-parse": "^2.4.5",
     "posthog-js": "^1.383.1",
     "react": "19.2.4",

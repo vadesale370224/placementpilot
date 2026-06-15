@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "coach": "AI Interview Coach",
+    "passport": "Skill Passport",
+    "jobs": "Job Matches",
+    "onboarding": "Onboarding",
+    "language": "Language"
+  },
+  "onboarding": {
+    "title": "Welcome to Placement Pilot",
+    "subtitle": "Let's set up your voice-first multilingual profile in under 2 minutes.",
+    "selectLanguage": "Select Your Interface Language",
+    "selectState": "Select Your State",
+    "recordIntro": "Record Your Voice Introduction",
+    "recordIntroHelp": "Introduce yourself, mention your key skills, experience, and the jobs you are looking for. Speak in Hindi, Marathi, English, or any local language.",
+    "startRecording": "Start Recording",
+    "stopRecording": "Stop Recording",
+    "submitting": "Creating Profile...",
+    "submit": "Submit and Build Profile",
+    "placeholderState": "Choose a State in India"
+  },
+  "passport": {
+    "title": "Your Skill Passport",
+    "subtitle": "Your verified skills and overall job readiness index.",
+    "readinessScore": "Readiness Score",
+    "readinessScoreHelp": "Based on your voice onboarding and AI mock interviews.",
+    "skillsSection": "Your Extracted Skills",
+    "verificationLevel": "Verification Status",
+    "addSkill": "Add Skill Manually",
+    "skillNamePlaceholder": "e.g., React, Python, Accounting",
+    "noSkillsYet": "No skills extracted yet. Record a voice intro in Onboarding!",
+    "status": {
+      "SELF_REPORTED": "Self Reported",
+      "AI_VERIFIED": "AI Verified",
+      "INSTITUTE_VERIFIED": "Institute Verified",
+      "EMPLOYER_VERIFIED": "Employer Verified"
+    }
+  },
+  "jobs": {
+    "title": "Multilingual Job Matches",
+    "subtitle": "AI-matched jobs based on your skills, state, and language preferences.",
+    "matchScore": "Match Score",
+    "requiredLanguages": "Required Languages",
+    "skillsMatched": "Skills Match",
+    "explanationTitle": "AI Match Explanation",
+    "noMatches": "No jobs matching your profile yet.",
+    "applyNow": "Apply Now",
+    "applied": "Applied"
+  },
+  "coach": {
+    "title": "AI Interview Coach",
+    "subtitle": "Practice voice interviews in your preferred language and get instant feedback.",
+    "selectTopic": "Select Practice Topic",
+    "startPractice": "Start Practice Session",
+    "questionLabel": "Question {number}:",
+    "recording": "Recording Response...",
+    "transcribing": "Transcribing your response...",
+    "feedbackTitle": "Instant Feedback",
+    "strengths": "Strengths",
+    "weaknesses": "Areas of Improvement",
+    "overallScore": "Interview Performance Score",
+    "nextQuestion": "Next Question",
+    "finishSession": "Finish and Save to Passport"
+  },
+  "general": {
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Error: {message}",
+    "save": "Save Changes",
+    "retry": "Retry"
+  }
+}

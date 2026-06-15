@@ -1,7 +1,7 @@
 // prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["filterJson"]
 }
 
 datasource db {
@@ -10,67 +10,123 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashed password (if using credentials)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile   Profile?
-  resumes   Resume[]
-  applications Application[]
-  roadmap   Roadmap?
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  role         Role     @default(JOB_SEEKER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  profile      Profile?
+}
+
+enum Role {
+  JOB_SEEKER
+  EMPLOYER
+  INSTITUTE
+  ADMIN
+}
+
+enum VerificationLevel {
+  SELF_REPORTED
+  AI_VERIFIED
+  INSTITUTE_VERIFIED
+  EMPLOYER_VERIFIED
 }
 
 model Profile {
-  id        String @id @default(cuid())
-  user      User   @relation(fields: [userId], references: [id])
-  userId    String @unique
-  firstName String?
-  lastName  String?
-  avatarUrl String?
-  bio       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName          String
+  phone             String?  @unique
+  bio               String?
+  avatarUrl         String?
+  companyName       String?  // For employer role
+  
+  // Multilingual & Locality settings
+  preferredLanguage String   @default("en") // Selected active UI language (e.g., "en", "hi", "mr")
+  languages         Json     // Spoken/supported languages list (JSON Array, e.g. ["en", "hi", "mr"])
+  state             String?  // Indian State location (e.g., "Maharashtra", "Tamil Nadu")
+  
+  isVerified        Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  skillPassport     SkillPassport?
+  jobListings       JobListing[]
+  applications      Application[]
+  matchResults      MatchResult[]
+  interviewSessions InterviewSession[]
 }
 
-model Resume {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  title     String
-  fileUrl   String   // Supabase storage URL
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model SkillPassport {
+  id                String            @id @default(cuid())
+  profileId         String            @unique
+  profile           Profile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  skills            Json              // Array of skills with proficiency levels & verification status
+  readinessScore    Float             @default(0)
+  verificationLevel VerificationLevel @default(SELF_REPORTED)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model JobListing {
+  id                String   @id @default(cuid())
+  employerId        String
+  employer          Profile  @relation(fields: [employerId], references: [id], onDelete: Cascade)
+  title             String
+  description       String
+  requirements      Json     // List of requirements/skills
+  requiredLanguages Json?    // Required languages (JSON Array, e.g. ["en", "hi"])
+  location          String?
+  salary            String?
+  status            String   @default("OPEN")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  applications      Application[]
+  matchResults      MatchResult[]
 }
 
 model Application {
+  id          String   @id @default(cuid())
+  jobId       String
+  job         JobListing @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobSeekerId String
+  jobSeeker   Profile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  interviewSessions InterviewSession[]
+}
+
+model MatchResult {
   id           String   @id @default(cuid())
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String
-  company      String
-  position     String
-  status       String   @default("applied") // applied, interview, offer, rejected
-  appliedAt    DateTime @default(now())
-  notes        String?
+  jobListingId String
+  jobListing   JobListing @relation(fields: [jobListingId], references: [id], onDelete: Cascade)
+  profileId    String
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  score        Float
+  matchDetails Json?
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
 
-model Roadmap {
+model InterviewSession {
   id            String   @id @default(cuid())
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String   @unique
-  content       Json     // JSON structure generated by AI
-  generatedAt   DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model ResumeAnalysis {
-  id            String   @id @default(cuid())
-  userId        String
-  fileName      String
-  fileUrl       String
-  extractedText String   @db.Text
-  analysisJson  Json
+  applicationId String?
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  profileId     String
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  topic         String
+  status        String   @default("SCHEDULED")
+  scheduledAt   DateTime
+  feedback      Json?
+  transcript    String?
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
