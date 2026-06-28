@@ -1,11 +1,11 @@
 "use client";
 
-import { UserButton } from "@/lib/auth-compat";
+import { UserButton, useUser } from "@/lib/auth-compat";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { setLocale } from "@/lib/i18n";
 import { useState } from "react";
-import { dbMock } from "@/lib/dbMock";
+import { api } from "@/lib/api";
 
 export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const t = useTranslations("nav");
@@ -16,19 +16,26 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
     setLocale(e.target.value);
   };
 
-  const handlePreloadDemo = () => {
-    dbMock.preloadDemoData();
-    document.cookie = `NEXT_LOCALE=mr; path=/; max-age=31536000; SameSite=Lax`;
-    document.cookie = `pp_profile_id=prof-demo-iti; path=/; max-age=31536000; SameSite=Lax`;
-    setShowJudgeConsole(false);
-    window.location.href = "/passport";
+  const handlePreloadDemo = async () => {
+    try {
+      await api.preloadDemoUser();
+      setShowJudgeConsole(false);
+      window.location.href = "/passport";
+    } catch (err) {
+      console.error(err);
+      alert("Failed to preload demo user.");
+    }
   };
 
-  const handleClearData = () => {
-    dbMock.clearAll();
-    document.cookie = "pp_profile_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
-    setShowJudgeConsole(false);
-    window.location.href = "/onboarding";
+  const handleClearData = async () => {
+    try {
+      await api.logout();
+      setShowJudgeConsole(false);
+      window.location.href = "/onboarding";
+    } catch (err) {
+      console.error(err);
+      alert("Failed to clear data.");
+    }
   };
 
   return (
@@ -77,8 +84,23 @@ export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => vo
               </select>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
               <UserButton />
+              {useUser().isSignedIn && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await api.logout();
+                      window.location.href = "/login";
+                    } catch (err) {
+                      console.error("Logout failed:", err);
+                    }
+                  }}
+                  className="px-3.5 py-1.5 bg-red-505/10 hover:bg-red-650 hover:text-white border border-red-500/20 text-red-500 text-xs font-bold rounded-xl transition cursor-pointer"
+                >
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         </div>

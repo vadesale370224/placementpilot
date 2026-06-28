@@ -12,14 +12,17 @@
     "@clerk/nextjs": "^7.4.3",
     "@prisma/client": "^6.19.3",
     "@sentry/nextjs": "^10.56.0",
+    "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.0",
     "framer-motion": "^12.40.0",
+    "lucide-react": "^1.21.0",
     "mammoth": "^1.12.0",
     "next": "16.2.7",
     "next-intl": "^4.13.0",
     "openai": "^6.42.0",
     "pdf-parse": "^2.4.5",
     "posthog-js": "^1.383.1",
+    "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-hook-form": "^7.78.0",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
@@ -38,6 +42,10 @@
     "eslint-config-next": "16.2.7",
     "prisma": "^6.19.3",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }

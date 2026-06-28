@@ -1,0 +1,963 @@
+{
+  "users": [
+    {
+      "id": "emp-nashik-msme",
+      "email": "recruiter@nashikmsme.org",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-21T14:29:28.536Z",
+      "updatedAt": "2026-06-21T14:29:28.540Z"
+    },
+    {
+      "id": "usr-7972458533",
+      "email": "7972458533@placementpilot.ai",
+      "role": "JOB_SEEKER",
+      "createdAt": "2026-06-21T14:29:28.550Z",
+      "updatedAt": "2026-06-27T07:52:58.680Z"
+    },
+    {
+      "id": "emp-satpur-elec-id",
+      "email": "jobs@satpurelectricals.com",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.406Z",
+      "updatedAt": "2026-06-26T11:33:55.408Z"
+    },
+    {
+      "id": "emp-ambad-weld-id",
+      "email": "info@ambadwelders.co.in",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.426Z",
+      "updatedAt": "2026-06-26T11:33:55.426Z"
+    },
+    {
+      "id": "emp-sinnar-cnc-id",
+      "email": "hr@sinnarcnctech.com",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.440Z",
+      "updatedAt": "2026-06-26T11:33:55.440Z"
+    },
+    {
+      "id": "emp-nashik-sec-id",
+      "email": "contact@nashiksecurity.in",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.454Z",
+      "updatedAt": "2026-06-26T11:33:55.454Z"
+    },
+    {
+      "id": "emp-panchavati-mp-id",
+      "email": "build@panchavati.com",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.468Z",
+      "updatedAt": "2026-06-26T11:33:55.468Z"
+    },
+    {
+      "id": "emp-nashik-plumb-id",
+      "email": "plumb@nashikcare.com",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.480Z",
+      "updatedAt": "2026-06-26T11:33:55.480Z"
+    },
+    {
+      "id": "emp-sinnar-carp-id",
+      "email": "design@sinnarwood.com",
+      "role": "EMPLOYER",
+      "createdAt": "2026-06-26T11:33:55.494Z",
+      "updatedAt": "2026-06-26T11:33:55.494Z"
+    },
+    {
+      "id": "usr-1234567800",
+      "email": "1234567800@placementpilot.ai",
+      "role": "JOB_SEEKER",
+      "createdAt": "2026-06-27T07:27:57.186Z",
+      "updatedAt": "2026-06-27T07:27:57.187Z"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "prof-nashik-recruiter",
+      "userId": "emp-nashik-msme",
+      "fullName": "Nashik MSME Industrial Association",
+      "companyName": "Nashik MSME Cluster Association",
+      "phone": "+91 25300 00000",
+      "bio": "Coordinating placements and vocational training jobs across Satpur MIDC, Ambad MIDC, and Sinnar areas in Nashik.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-21T14:29:28.540Z",
+      "updatedAt": "2026-06-21T14:29:28.540Z"
+    },
+    {
+      "id": "prof-wqc9ovv42",
+      "userId": "usr-7972458533",
+      "fullName": "Vaishnavi Desale",
+      "phone": "+917972458533",
+      "bio": "{\"text\":\"I am Vaishnavi Desale from Maharashtra.\",\"collegeName\":\"\",\"degree\":\"\",\"branch\":\"\",\"year\":\"\",\"cgpa\":\"\",\"preferredRole\":\"\",\"preferredLocation\":\"\",\"expectedSalary\":\"\",\"employmentType\":\"\",\"originalTranscript\":\"\",\"extractedFields\":\"{\\\"fullName\\\":\\\"\\\",\\\"degree\\\":\\\"\\\",\\\"branch\\\":\\\"\\\",\\\"skills\\\":[]}\",\"extractionConfidence\":0}",
+      "preferredLanguage": "en",
+      "languages": [
+        "en",
+        "hi"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-21T14:29:57.956Z",
+      "updatedAt": "2026-06-21T14:29:57.957Z"
+    },
+    {
+      "id": "prof-satpur-elec",
+      "userId": "emp-satpur-elec-id",
+      "fullName": "Rajesh Kulkarni (Satpur Electricals)",
+      "companyName": "Satpur Electricals Ltd",
+      "phone": "+91 25311 11111",
+      "bio": "Satpur MIDC industrial electrical contractor.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.420Z",
+      "updatedAt": "2026-06-26T11:33:55.420Z"
+    },
+    {
+      "id": "prof-ambad-weld",
+      "userId": "emp-ambad-weld-id",
+      "fullName": "Sanjay Patil (Ambad Welders)",
+      "companyName": "Ambad Industrial Welders",
+      "phone": "+91 25322 22222",
+      "bio": "Heavy fabrication shop in Ambad MIDC.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.434Z",
+      "updatedAt": "2026-06-26T11:33:55.434Z"
+    },
+    {
+      "id": "prof-sinnar-cnc",
+      "userId": "emp-sinnar-cnc-id",
+      "fullName": "Anand Shah (Sinnar CNC)",
+      "companyName": "Sinnar CNC Tech",
+      "phone": "+91 25333 33333",
+      "bio": "High precision CNC milling and turning works.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.447Z",
+      "updatedAt": "2026-06-26T11:33:55.447Z"
+    },
+    {
+      "id": "prof-nashik-sec",
+      "userId": "emp-nashik-sec-id",
+      "fullName": "Vikram Gaikwad (Nashik Security)",
+      "companyName": "Nashik Security Solutions",
+      "phone": "+91 25344 44444",
+      "bio": "Industrial and residential security guarding service provider.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.459Z",
+      "updatedAt": "2026-06-26T11:33:55.460Z"
+    },
+    {
+      "id": "prof-panchavati-mp",
+      "userId": "emp-panchavati-mp-id",
+      "fullName": "Dinesh Marathe (Panchavati Builders)",
+      "companyName": "Panchavati Builders & Painters",
+      "phone": "+91 25355 22222",
+      "bio": "Civil construction, masonry, and wall painting contractors.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.475Z",
+      "updatedAt": "2026-06-26T11:33:55.475Z"
+    },
+    {
+      "id": "prof-nashik-plumb",
+      "userId": "emp-nashik-plumb-id",
+      "fullName": "Karan Johar (Nashik Plumbing)",
+      "companyName": "Nashik Plumbing Care",
+      "phone": "+91 25366 33333",
+      "bio": "Providing commercial pipe fittings and sanitization services.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.488Z",
+      "updatedAt": "2026-06-26T11:33:55.488Z"
+    },
+    {
+      "id": "prof-sinnar-carp",
+      "userId": "emp-sinnar-carp-id",
+      "fullName": "Milind Soman (Sinnar Wood)",
+      "companyName": "Sinnar Woodcrafts",
+      "phone": "+91 25377 44444",
+      "bio": "Bespoke commercial furniture makers.",
+      "languages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "state": "Maharashtra",
+      "isVerified": true,
+      "createdAt": "2026-06-26T11:33:55.501Z",
+      "updatedAt": "2026-06-26T11:33:55.501Z"
+    }
+  ],
+  "skillPassports": [
+    {
+      "id": "skil-b5pg99v6d",
+      "profileId": "prof-wqc9ovv42",
+      "skills": [],
+      "readinessScore": 75,
+      "verificationLevel": "AI_VERIFIED",
+      "createdAt": "2026-06-21T14:29:57.987Z",
+      "updatedAt": "2026-06-21T14:29:57.987Z"
+    }
+  ],
+  "jobListings": [
+    {
+      "id": "nashik-job-elec-1",
+      "title": "Industrial Electrician (औद्योगिक इलेक्ट्रिशियन)",
+      "description": "Require an experienced ITI Electrician for machinery wiring, circuit troubleshooting, and high-voltage control panel maintenance. Must follow plant LOTO safety protocols.",
+      "requirements": [
+        "Wiring",
+        "Electrical Maintenance",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "mr"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹18,000 - ₹24,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-elec-2",
+      "title": "Maintenance Electrician (इलेक्ट्रिशियन)",
+      "description": "Urgent opening for a plant maintenance electrician. Main responsibilities include generator servicing, breakdown repairs, and domestic facility light wiring.",
+      "requirements": [
+        "Wiring",
+        "Electrical Maintenance",
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Satpur MIDC, Nashik",
+      "salary": "₹16,000 - ₹20,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-elec-3",
+      "title": "Substation Operator / Junior Electrician",
+      "description": "Monitoring control desk meters, documenting voltage logs, switching grids, and supervising physical safety barriers at our Ambad power distribution center.",
+      "requirements": [
+        "Electrical Maintenance",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "en"
+      ],
+      "location": "Ambad, Nashik",
+      "salary": "₹17,000 - ₹22,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-elec-4",
+      "title": "AC & Panel Wiring Electrician",
+      "description": "Perform precision panel board assembly, structural wiring, duct layouts, and cooling unit testing in an automated manufacturing environment.",
+      "requirements": [
+        "Wiring",
+        "Electrical Maintenance"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Sinnar MIDC, Nashik",
+      "salary": "₹19,000 - ₹25,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-weld-1",
+      "title": "MIG Structural Welder (वेल्डर)",
+      "description": "Structural fabricator needed at heavy steel forging site in Satpur. Must read basic drawings and perform MIG/arc welding with proper gas shielding.",
+      "requirements": [
+        "Welding",
+        "Blueprints",
+        "Metal Fabrication"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Satpur MIDC, Nashik",
+      "salary": "₹18,000 - ₹26,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-weld-2",
+      "title": "TIG Argon Welder",
+      "description": "Stainless steel pipe welding job. High precision and quality check compliance required. Must be able to grind joints and inspect for porosity.",
+      "requirements": [
+        "Welding",
+        "Grinding",
+        "Metal Fabrication"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹20,000 - ₹28,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-weld-3",
+      "title": "Gas Cutter & Assistant Welder",
+      "description": "Operating gas oxy-fuel torches, grinding scrap metal sheets, cleaning weld seams, and setting up shielding gas tanks under senior guidance.",
+      "requirements": [
+        "Welding",
+        "Grinding"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Sinnar, Nashik",
+      "salary": "₹14,000 - ₹18,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-weld-4",
+      "title": "Custom Sheet Metal Welder",
+      "description": "Welding thin-gauge sheets for commercial kitchen equipment. Demands high structural neatness, dimensional checking, and seam polishing.",
+      "requirements": [
+        "Welding",
+        "Grinding",
+        "Metal Fabrication",
+        "Blueprints"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "mr"
+      ],
+      "location": "Satpur, Nashik",
+      "salary": "₹17,000 - ₹22,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-fitter-1",
+      "title": "Mechanical Assembly Fitter (फिटर)",
+      "description": "Requires alignment of motor mounts, gearbox fitting, checking tolerances with vernier calipers, and heavy bolt assembly at auto component unit.",
+      "requirements": [
+        "Metal Fabrication",
+        "Blueprints",
+        "Grinding",
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹18,000 - ₹24,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-fitter-2",
+      "title": "Pipe Fitter / Fabricator",
+      "description": "Laying out pipeline routes, threading iron ducts, bending conduits, and assembling flanges per detailed blueprints at Nashik chemical plant.",
+      "requirements": [
+        "Metal Fabrication",
+        "Blueprints",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Satpur, Nashik",
+      "salary": "₹19,000 - ₹25,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-fitter-3",
+      "title": "Maintenance Fitter",
+      "description": "Dismantling conveyor lines, replacing worn bearings, aligning pulleys, and lubricating gears to avoid production shutdowns.",
+      "requirements": [
+        "Troubleshooting",
+        "Grinding",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Nashik Road, Nashik",
+      "salary": "₹16,000 - ₹21,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-fitter-4",
+      "title": "Machine Assembler Fitter",
+      "description": "Precision bench fitting, hydraulic hose routing, sliding guide adjustment, and structural alignment for bespoke machinery builders.",
+      "requirements": [
+        "Metal Fabrication",
+        "Blueprints",
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "en",
+        "hi",
+        "mr"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹20,000 - ₹27,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-plumb-1",
+      "title": "Commercial Plumber (प्लंबर)",
+      "description": "Lay out water lines, install PVC/GI drainage pipes, repair toilet fixtures, and inspect for leakage in new residential housing sites.",
+      "requirements": [
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "mr"
+      ],
+      "location": "Indira Nagar, Nashik",
+      "salary": "₹15,000 - ₹20,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-plumb-2",
+      "title": "Industrial Pipe Plumber",
+      "description": "Installation and repair of high-pressure cooling pipes, boiler water inlets, valves, and gauges in food processing unit.",
+      "requirements": [
+        "Safety Protocols",
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Sinnar MIDC, Nashik",
+      "salary": "₹17,000 - ₹23,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-plumb-3",
+      "title": "Maintenance Plumber & Handyman",
+      "description": "Attend to daily leak calls, unclog commercial sewer lines, inspect fire hydrant pipe lines, and change utility pumps at hotel cluster.",
+      "requirements": [
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Panchavati, Nashik",
+      "salary": "₹14,000 - ₹18,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-plumb-4",
+      "title": "Submersible Pump Installer & Plumber",
+      "description": "Borewell pipe dropping, submersible motor leveling, pressure relief valve connections, and controller electrical hookups for agricultural supply units.",
+      "requirements": [
+        "Wiring",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Dindori, Nashik",
+      "salary": "₹16,000 - ₹22,005 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-ac-1",
+      "title": "AC Technician / HVAC Mechanic (एसी मेकॅनिक)",
+      "description": "Installing commercial split AC systems, charging R-32 refrigerant, checking pressure leaks, and diagnosing compressor defects in office structures.",
+      "requirements": [
+        "Wiring",
+        "Troubleshooting",
+        "Electrical Maintenance"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "College Road, Nashik",
+      "salary": "₹18,000 - ₹25,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-ac-2",
+      "title": "Chiller Plant Operator & HVAC Fitter",
+      "description": "Requires running and daily maintenance logs of centralized cooling towers, servicing industrial ducts, and cleaning filter cassettes.",
+      "requirements": [
+        "Electrical Maintenance",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹20,050 - ₹26,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-ac-3",
+      "title": "Apprentice AC Technician",
+      "description": "Cleaning air filters, checking blower motor currents, climbing ladders for brackets installation, and loading parts truck.",
+      "requirements": [
+        "Electrical Maintenance",
+        "Wiring"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Satpur, Nashik",
+      "salary": "₹12,000 - ₹15,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "nashik-job-ac-4",
+      "title": "Refrigeration & Cooling Technician",
+      "description": "Repairing walk-in commercial cold rooms, supermarket display freezers, and dynamic temp control boards. Relies on troubleshooting expertise.",
+      "requirements": [
+        "Wiring",
+        "Troubleshooting",
+        "Electrical Maintenance",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "en",
+        "mr",
+        "hi"
+      ],
+      "location": "Pathardi Phata, Nashik",
+      "salary": "₹19,000 - ₹26,000 / month",
+      "employerId": "prof-nashik-recruiter",
+      "status": "OPEN"
+    },
+    {
+      "id": "job-elec-nashik-1",
+      "title": "ITI Maintenance Electrician",
+      "description": "Urgent hiring for a plant maintenance electrician to wire circuits, service heavy machinery, and handle panel board diagnostics.",
+      "requirements": [
+        "Wiring",
+        "Electrical Maintenance",
+        "Troubleshooting"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Satpur MIDC, Nashik",
+      "salary": "₹15,000 - ₹20,000 / month",
+      "employerId": "prof-satpur-elec",
+      "createdAt": "2026-06-26T11:33:55.509Z",
+      "updatedAt": "2026-06-26T11:33:55.509Z"
+    },
+    {
+      "id": "job-elec-mumbai-2",
+      "title": "Commercial AC Fitter & Electrician",
+      "description": "Perform split AC installations, cable routing, and electric circuit repairs in new office spaces.",
+      "requirements": [
+        "Wiring",
+        "Troubleshooting",
+        "Air Conditioning"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "en"
+      ],
+      "location": "Thane, Mumbai",
+      "salary": "₹18,000 - ₹25,000 / month",
+      "employerId": "prof-satpur-elec",
+      "createdAt": "2026-06-26T11:33:55.517Z",
+      "updatedAt": "2026-06-26T11:33:55.517Z"
+    },
+    {
+      "id": "job-weld-nashik-1",
+      "title": "Structural MIG Welder",
+      "description": "Requires fabricating steel beams, grinding joints, and gas arc MIG welding for industrial boiler setups.",
+      "requirements": [
+        "Welding",
+        "Grinding",
+        "Metal Fabrication"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Ambad MIDC, Nashik",
+      "salary": "₹16,000 - ₹22,000 / month",
+      "employerId": "prof-ambad-weld",
+      "createdAt": "2026-06-26T11:33:55.522Z",
+      "updatedAt": "2026-06-26T11:33:55.522Z"
+    },
+    {
+      "id": "job-weld-pune-2",
+      "title": "TIG Argon Welder",
+      "description": "Stainless steel welding for auto component fabrication. Requires reading mechanical blueprint drawings and quality checks.",
+      "requirements": [
+        "Welding",
+        "Blueprints",
+        "Metal Fabrication"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Chakan, Pune",
+      "salary": "₹20,000 - ₹26,500 / month",
+      "employerId": "prof-ambad-weld",
+      "createdAt": "2026-06-26T11:33:55.528Z",
+      "updatedAt": "2026-06-26T11:33:55.528Z"
+    },
+    {
+      "id": "job-fitter-nashik-1",
+      "title": "Mechanical Assembly Fitter",
+      "description": "Perform gear assembly, hydraulic pipe fittings, and alignment checks using vernier calipers.",
+      "requirements": [
+        "Metal Fabrication",
+        "Blueprints",
+        "Conveyor Systems"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Ambad, Nashik",
+      "salary": "₹14,500 - ₹19,000 / month",
+      "employerId": "prof-ambad-weld",
+      "createdAt": "2026-06-26T11:33:55.534Z",
+      "updatedAt": "2026-06-26T11:33:55.534Z"
+    },
+    {
+      "id": "job-fitter-pune-2",
+      "title": "Production Assembly Fitter",
+      "description": "Fits and assembles automotive chassis panels. Follows safety layouts and operates standard tooling systems.",
+      "requirements": [
+        "Blueprints",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Pimpri, Pune",
+      "salary": "₹17,000 - ₹23,000 / month",
+      "employerId": "prof-ambad-weld",
+      "createdAt": "2026-06-26T11:33:55.541Z",
+      "updatedAt": "2026-06-26T11:33:55.541Z"
+    },
+    {
+      "id": "job-plumb-nashik-1",
+      "title": "Commercial Building Plumber",
+      "description": "Fitting water lines, laying PVC/GI drainage pipes, fixing toilet accessories in commercial complexes.",
+      "requirements": [
+        "Conduit Bending",
+        "Troubleshooting",
+        "Pipe Fitting"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "mr"
+      ],
+      "location": "College Road, Nashik",
+      "salary": "₹13,000 - ₹18,000 / month",
+      "employerId": "prof-nashik-plumb",
+      "createdAt": "2026-06-26T11:33:55.547Z",
+      "updatedAt": "2026-06-26T11:33:55.547Z"
+    },
+    {
+      "id": "job-plumb-mumbai-2",
+      "title": "Industrial Pipe Fitter Plumber",
+      "description": "Installation and repair of high pressure industrial water inlets, cooling tubes, and valves in chemical plants.",
+      "requirements": [
+        "Safety Protocols",
+        "Troubleshooting",
+        "Pipe Fitting"
+      ],
+      "requiredLanguages": [
+        "en",
+        "hi"
+      ],
+      "location": "Navi Mumbai, Mumbai",
+      "salary": "₹18,500 - ₹24,000 / month",
+      "employerId": "prof-nashik-plumb",
+      "createdAt": "2026-06-26T11:33:55.553Z",
+      "updatedAt": "2026-06-26T11:33:55.553Z"
+    },
+    {
+      "id": "job-ac-nashik-1",
+      "title": "AC Mechanic / HVAC Installer",
+      "description": "Split AC servicing, charging R-32 cooling gases, detecting pipeline leakages, and panel wiring.",
+      "requirements": [
+        "Wiring",
+        "Troubleshooting",
+        "Electrical Maintenance"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Pathardi Phata, Nashik",
+      "salary": "₹16,000 - ₹22,000 / month",
+      "employerId": "prof-satpur-elec",
+      "createdAt": "2026-06-26T11:33:55.560Z",
+      "updatedAt": "2026-06-26T11:33:55.560Z"
+    },
+    {
+      "id": "job-ac-pune-2",
+      "title": "Chiller Plant Operator AC Tech",
+      "description": "Monitoring and servicing commercial central HVAC cooling towers, fan coil units, and checking compressors.",
+      "requirements": [
+        "Electrical Maintenance",
+        "Troubleshooting",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "en"
+      ],
+      "location": "Hinjewadi, Pune",
+      "salary": "₹19,000 - ₹25,000 / month",
+      "employerId": "prof-satpur-elec",
+      "createdAt": "2026-06-26T11:33:55.566Z",
+      "updatedAt": "2026-06-26T11:33:55.566Z"
+    },
+    {
+      "id": "job-cnc-nashik-1",
+      "title": "CNC Lathe Machine Operator",
+      "description": "Operating CNC lathe machinery, loading metal billets, checking component tolerances, and tool indexing.",
+      "requirements": [
+        "Tool Indexing",
+        "Calipers",
+        "Machine Operations"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "mr"
+      ],
+      "location": "Sinnar MIDC, Nashik",
+      "salary": "₹15,000 - ₹20,000 / month",
+      "employerId": "prof-sinnar-cnc",
+      "createdAt": "2026-06-26T11:33:55.573Z",
+      "updatedAt": "2026-06-26T11:33:55.573Z"
+    },
+    {
+      "id": "job-cnc-pune-2",
+      "title": "CNC VMC Machine Operator",
+      "description": "VMC loading, offsets editing, check depth dimensions using micrometers. Must read design blueprints.",
+      "requirements": [
+        "Blueprints",
+        "Micrometers",
+        "Machine Operations"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Bhosari, Pune",
+      "salary": "₹16,500 - ₹22,500 / month",
+      "employerId": "prof-sinnar-cnc",
+      "createdAt": "2026-06-26T11:33:55.581Z",
+      "updatedAt": "2026-06-26T11:33:55.581Z"
+    },
+    {
+      "id": "job-paint-nashik-1",
+      "title": "Industrial Spray Painter",
+      "description": "Operate air compressor spray guns to paint sheet metal enclosures. Grinding, primer coating, and finish coating.",
+      "requirements": [
+        "Spray Painting",
+        "Primer Coating",
+        "Grinding"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Satpur MIDC, Nashik",
+      "salary": "₹14,000 - ₹19,000 / month",
+      "employerId": "prof-panchavati-mp",
+      "createdAt": "2026-06-26T11:33:55.588Z",
+      "updatedAt": "2026-06-26T11:33:55.588Z"
+    },
+    {
+      "id": "job-paint-mumbai-2",
+      "title": "Wall Painter / Deco Finish Painter",
+      "description": "Applying wall putty, sanding, rolling primer coats, and finishing luxury decorative paints at residential buildings.",
+      "requirements": [
+        "Putty Application",
+        "Sanding",
+        "Wall Painting"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Andheri, Mumbai",
+      "salary": "₹12,000 - ₹18,000 / month",
+      "employerId": "prof-panchavati-mp",
+      "createdAt": "2026-06-26T11:33:55.595Z",
+      "updatedAt": "2026-06-26T11:33:55.595Z"
+    },
+    {
+      "id": "job-carp-nashik-1",
+      "title": "Furniture Carpenter",
+      "description": "Cutting ply sheets, fixing laminates, wood routing, and assembling kitchen cabinets or commercial desks.",
+      "requirements": [
+        "Wood Cutting",
+        "Lamination",
+        "Furniture Assembly"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Sinnar, Nashik",
+      "salary": "₹15,000 - ₹21,000 / month",
+      "employerId": "prof-sinnar-carp",
+      "createdAt": "2026-06-26T11:33:55.601Z",
+      "updatedAt": "2026-06-26T11:33:55.601Z"
+    },
+    {
+      "id": "job-carp-pune-2",
+      "title": "Office Interior Wood Carpenter",
+      "description": "Assembling modular office cabins, dry wall partitions, ceiling frames, and fitting glass door hinges.",
+      "requirements": [
+        "Modular Partitioning",
+        "Ceiling Frames",
+        "Blueprints"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Wakad, Pune",
+      "salary": "₹17,000 - ₹23,000 / month",
+      "employerId": "prof-sinnar-carp",
+      "createdAt": "2026-06-26T11:33:55.607Z",
+      "updatedAt": "2026-06-26T11:33:55.607Z"
+    },
+    {
+      "id": "job-mason-nashik-1",
+      "title": "Bricklayer / Civil Mason",
+      "description": "Mixing cement, laying brick walls, plastering surfaces, tile setting at housing sites.",
+      "requirements": [
+        "Cement Mixing",
+        "Plastering",
+        "Tile Setting"
+      ],
+      "requiredLanguages": [
+        "mr"
+      ],
+      "location": "Panchavati, Nashik",
+      "salary": "₹14,000 - ₹19,500 / month",
+      "employerId": "prof-panchavati-mp",
+      "createdAt": "2026-06-26T11:33:55.614Z",
+      "updatedAt": "2026-06-26T11:33:55.614Z"
+    },
+    {
+      "id": "job-mason-mumbai-2",
+      "title": "Concrete Mason & Plasterer",
+      "description": "Concrete casting, structural pillar reinforcing checks, high quality wall plastering and alignment.",
+      "requirements": [
+        "Cement Mixing",
+        "Concreting",
+        "Plastering"
+      ],
+      "requiredLanguages": [
+        "hi"
+      ],
+      "location": "Kalyan, Mumbai",
+      "salary": "₹16,000 - ₹22,000 / month",
+      "employerId": "prof-panchavati-mp",
+      "createdAt": "2026-06-26T11:33:55.621Z",
+      "updatedAt": "2026-06-26T11:33:55.621Z"
+    },
+    {
+      "id": "job-sec-nashik-1",
+      "title": "Industrial Security Guard",
+      "description": "Gate registration, patrolling warehouse grounds, verifying shipping logs, locking access gates.",
+      "requirements": [
+        "Patrolling",
+        "Visitor Registration",
+        "Safety Protocols"
+      ],
+      "requiredLanguages": [
+        "mr",
+        "hi"
+      ],
+      "location": "Satpur MIDC, Nashik",
+      "salary": "₹12,000 - ₹16,000 / month",
+      "employerId": "prof-nashik-sec",
+      "createdAt": "2026-06-26T11:33:55.626Z",
+      "updatedAt": "2026-06-26T11:33:55.626Z"
+    },
+    {
+      "id": "job-sec-pune-2",
+      "title": "Commercial Building Guard",
+      "description": "Manning corporate entry reception, monitoring CCTV alerts, regulating employee parking spaces.",
+      "requirements": [
+        "Visitor Registration",
+        "CCTV Monitoring",
+        "Communication"
+      ],
+      "requiredLanguages": [
+        "hi",
+        "en"
+      ],
+      "location": "Koregaon Park, Pune",
+      "salary": "₹14,000 - ₹18,500 / month",
+      "employerId": "prof-nashik-sec",
+      "createdAt": "2026-06-26T11:33:55.634Z",
+      "updatedAt": "2026-06-26T11:33:55.634Z"
+    }
+  ],
+  "applications": [],
+  "matchResults": [],
+  "interviewSessions": []
+}

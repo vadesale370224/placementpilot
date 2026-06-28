@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { dbMock, MockProfile, MockSkillPassport, MockInterviewSession } from "@/lib/dbMock";
+import { api } from "@/lib/api";
 import { speakText, startAudioRecording } from "@/lib/speech";
 
 interface QuestionTemplate {
@@ -214,8 +214,23 @@ export default function InterviewCoachPage() {
   const locale = useLocale();
   const router = useRouter();
 
-  const [profile, setProfile] = useState<MockProfile | null>(null);
-  const [passport, setPassport] = useState<MockSkillPassport | null>(null);
+  const [recordingStopFn, setRecordingStopFn] = useState<(() => void) | null>(null);
+  
+  const [isSpeechSupported, setIsSpeechSupported] = useState(true);
+  const [typedAnswer, setTypedAnswer] = useState("");
+  const [profile, setProfile] = useState<any | null>(null);
+  const [passport, setPassport] = useState<any | null>(null);
+
+  // Check speech recognition capability
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        setIsSpeechSupported(false);
+      }
+    }
+  }, []);
+
   const [sessionActive, setSessionActive] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("Industrial Electrician");
 
@@ -233,19 +248,22 @@ export default function InterviewCoachPage() {
     detailedFeedback: string;
   } | null>(null);
 
-  const [recordingStopFn, setRecordingStopFn] = useState<(() => void) | null>(null);
-
   useEffect(() => {
-    const activeProfile = dbMock.getProfile();
-    const activePassport = dbMock.getSkillPassport();
-
-    if (!activeProfile || !activePassport) {
-      router.push("/onboarding");
-      return;
+    async function loadData() {
+      try {
+        const res = await api.getProfile();
+        if (!res || !res.profile || !res.passport) {
+          router.push("/onboarding");
+          return;
+        }
+        setProfile(res.profile);
+        setPassport(res.passport);
+      } catch (err) {
+        console.error("Coach profile load error:", err);
+        router.push("/onboarding");
+      }
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProfile(activeProfile);
-    setPassport(activePassport);
+    loadData();
   }, [router]);
 
   useEffect(() => {
@@ -299,7 +317,13 @@ export default function InterviewCoachPage() {
     }
   };
 
-  const simulateTranscription = async () => {
+  const handleSubmitTypedAnswer = () => {
+    if (!typedAnswer.trim()) return;
+    simulateTranscription(typedAnswer.trim());
+    setTypedAnswer("");
+  };
+
+  const simulateTranscription = async (customTranscript?: string) => {
     setTranscribing(true);
     await new Promise(resolve => setTimeout(resolve, 2000));
     setTranscribing(false);
@@ -307,7 +331,9 @@ export default function InterviewCoachPage() {
     const localeDb = FEEDBACK_DATABASE[locale] || FEEDBACK_DATABASE["en"];
     const topicDb = localeDb[selectedTopic] || FEEDBACK_DATABASE["en"]["Industrial Electrician"];
 
-    setTranscript(topicDb.transcript);
+    const finalTranscript = customTranscript || topicDb.transcript;
+
+    setTranscript(finalTranscript);
     setSessionFeedback({
       score: topicDb.score,
       strengths: topicDb.strengths,
@@ -323,37 +349,29 @@ export default function InterviewCoachPage() {
     speakText(readFeedback, locale);
   };
 
-  const handleFinishPractice = () => {
+  const handleFinishPractice = async () => {
     if (!profile || !passport || !sessionFeedback) return;
 
-    const mockSession: MockInterviewSession = {
-      id: "session-" + Math.random().toString(36).substring(2, 9),
-      profileId: profile.id,
-      topic: selectedTopic,
-      status: "COMPLETED",
-      scheduledAt: new Date().toISOString(),
-      feedback: sessionFeedback,
-      transcript: transcript
-    };
-    dbMock.saveInterviewSession(mockSession);
+    try {
+      await api.saveInterviewSession({
+        topic: selectedTopic,
+        feedback: sessionFeedback,
+        transcript: transcript,
+      });
 
-    const newScore = Math.min(100, parseFloat((passport.readinessScore + 10.0).toFixed(1)));
-    const updatedPassport: MockSkillPassport = {
-      ...passport,
-      readinessScore: newScore,
-      verificationLevel: "AI_VERIFIED"
-    };
-    dbMock.saveSkillPassport(updatedPassport);
-
-    alert(locale === 'hi' 
-      ? `साक्षात्कार सत्र सफलतापूर्वक सहेज लिया गया है! आपका तत्परता स्कोर (Readiness Score) बढ़कर ${newScore}% हो गया है।` 
-      : locale === 'mr' 
-      ? `मुलाखत सत्र यशस्वीरित्या जतन केले आहे! तुमचा रेडीनेस स्कोअर वाढून ${newScore}% झाला आहे.` 
-      : `Interview session successfully saved! Your Readiness Score in Skill Passport has increased to ${newScore}%.`
-    );
-    
-    setSessionActive(false);
-    router.push("/passport");
+      const newScore = Math.min(100, parseFloat((passport.readinessScore + 10.0).toFixed(1)));
+      alert(locale === 'hi' 
+        ? `साक्षात्कार सत्र सफलतापूर्वक सहेज लिया गया है! आपका तत्परता स्कोर (Readiness Score) बढ़कर ${newScore}% हो गया है।` 
+        : locale === 'mr' 
+        ? `मुलाखत सत्र यशस्वीरित्या जतन केले आहे! तुमचा रेडीनेस स्कोअर वाढून ${newScore}% झाला आहे.` 
+        : `Interview session successfully saved! Your Readiness Score in Skill Passport has increased to ${newScore}%.`
+      );
+      
+      setSessionActive(false);
+      router.push("/passport");
+    } catch (err: any) {
+      alert("Failed to save interview session: " + err.message);
+    }
   };
 
   if (!profile) {
@@ -430,7 +448,7 @@ export default function InterviewCoachPage() {
                       className="px-3 py-1 bg-white/50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-750 rounded-full text-xs font-bold transition flex items-center gap-1 cursor-pointer"
                       title="Read aloud"
                     >
-                      🔊 Read Aloud
+                      {t("readAloud")}
                     </button>
                   </div>
                   <h3 className="font-bold text-gray-500 dark:text-gray-400 text-xs">
@@ -454,7 +472,7 @@ export default function InterviewCoachPage() {
                       🛑
                     </div>
                     <span className="text-sm font-extrabold text-red-500 block">
-                      Recording Answer: {duration}s
+                      {t("recordingAnswer", { time: duration })}
                     </span>
                   </div>
                 ) : transcribing ? (
@@ -474,14 +492,36 @@ export default function InterviewCoachPage() {
                     </span>
                   </div>
                 ) : !sessionFeedback ? (
-                  <div className="space-y-3">
-                    <button
-                      onClick={handleStartRecording}
-                      className="px-8 py-3.5 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 hover:from-violet-750 hover:to-cyan-600 text-white font-extrabold rounded-2xl shadow-lg hover:scale-[1.03] active:scale-[0.97] transition flex items-center gap-2 cursor-pointer"
-                    >
-                      🎙️ Speak Your Answer
-                    </button>
-                    <span className="text-xs text-gray-450 block font-medium">Click to activate voice input</span>
+                  <div className="space-y-3 w-full max-w-lg mx-auto">
+                    {!isSpeechSupported ? (
+                      <div className="space-y-3 w-full">
+                        <span className="text-xs font-extrabold text-amber-500 block text-center">
+                          ⚠️ Speech Recognition is not supported on this browser. Please type your answer.
+                        </span>
+                        <textarea
+                          value={typedAnswer}
+                          onChange={(e) => setTypedAnswer(e.target.value)}
+                          className="w-full h-28 p-4 bg-white/50 dark:bg-black/20 border border-gray-200 dark:border-gray-850 rounded-2xl text-sm leading-relaxed focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none dark:text-white font-medium"
+                          placeholder="Type your answer in your own words..."
+                        />
+                        <button
+                          onClick={handleSubmitTypedAnswer}
+                          className="w-full py-3 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 hover:from-violet-750 hover:to-cyan-600 text-white font-bold rounded-2xl shadow-md transition cursor-pointer text-xs"
+                        >
+                          Submit Answer
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          onClick={handleStartRecording}
+                          className="px-8 py-3.5 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 hover:from-violet-750 hover:to-cyan-600 text-white font-extrabold rounded-2xl shadow-lg hover:scale-[1.03] active:scale-[0.97] transition flex items-center gap-2 cursor-pointer mx-auto"
+                        >
+                          {t("speakAnswer")}
+                        </button>
+                        <span className="text-xs text-gray-450 block font-medium">{t("clickVoice")}</span>
+                      </>
+                    )}
                   </div>
                 ) : (
                   /* Feedback Screen */
@@ -491,7 +531,7 @@ export default function InterviewCoachPage() {
                         {t("feedbackTitle")}
                       </h4>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider font-mono">Performance Score:</span>
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider font-mono">{t("performanceScore")}</span>
                         <span className="text-sm font-black px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full border border-emerald-500/20">
                           {sessionFeedback.score}% MATCH
                         </span>
@@ -499,7 +539,7 @@ export default function InterviewCoachPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider font-mono">Your Vocal Transcript</span>
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider font-mono">{t("vocalTranscript")}</span>
                       <p className="p-4 bg-white/40 dark:bg-black/10 border border-gray-200 dark:border-gray-800 rounded-2xl text-sm italic font-medium text-gray-750 dark:text-gray-300">
                         &ldquo;{transcript}&rdquo;
                       </p>
@@ -507,14 +547,14 @@ export default function InterviewCoachPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold">
                       <div className="p-4 bg-emerald-500/5 dark:bg-emerald-950/10 border border-emerald-500/20 rounded-2xl space-y-2">
-                        <span className="text-emerald-500 font-black uppercase text-[10px] tracking-wider font-mono">✓ {t("strengths")}</span>
+                        <span className="text-emerald-500 font-black uppercase text-[10px] tracking-wider font-mono">✓ {t("strengthsTitle")}</span>
                         <ul className="list-disc list-inside space-y-1 text-emerald-955 dark:text-emerald-400">
                           {sessionFeedback.strengths.map(s => <li key={s}>{s}</li>)}
                         </ul>
                       </div>
 
                       <div className="p-4 bg-amber-500/5 dark:bg-amber-950/10 border border-amber-500/20 rounded-2xl space-y-2">
-                        <span className="text-amber-500 font-black uppercase text-[10px] tracking-wider font-mono">⚠️ {t("weaknesses")}</span>
+                        <span className="text-amber-500 font-black uppercase text-[10px] tracking-wider font-mono">⚠️ {t("weaknessesTitle")}</span>
                         <ul className="list-disc list-inside space-y-1 text-amber-955 dark:text-amber-400">
                           {sessionFeedback.weaknesses.map(w => <li key={w}>{w}</li>)}
                         </ul>
@@ -522,8 +562,8 @@ export default function InterviewCoachPage() {
                     </div>
 
                     <div className="p-4 bg-violet-50/50 dark:bg-violet-950/10 border border-violet-100/50 dark:border-violet-900/30 rounded-2xl space-y-2">
-                      <h4 className="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest font-mono">
-                        📝 Detailed Mentor Guidance
+                      <h4 className="text-[10px] font-black text-violet-655 dark:text-violet-400 uppercase tracking-widest font-mono">
+                        {t("detailedFeedbackTitle")}
                       </h4>
                       <p className="text-xs font-semibold leading-relaxed text-violet-900/90 dark:text-violet-300">
                         {sessionFeedback.detailedFeedback}
@@ -535,7 +575,7 @@ export default function InterviewCoachPage() {
                         onClick={handleFinishPractice}
                         className="px-6 py-3 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 text-white font-extrabold rounded-xl text-xs shadow-md transition hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                       >
-                        Finish Session & Save Score
+                        {t("finishSession")}
                       </button>
                     </div>
                   </div>

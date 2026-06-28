@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { dbMock, MockJobListing, MockApplication } from "@/lib/dbMock";
+import { MockJobListing, MockApplication } from "@/lib/dbMock";
+import { api } from "@/lib/api";
 
 interface EnrichedApplication {
   app: MockApplication;
@@ -13,17 +14,21 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const rawApps = dbMock.getApplications();
-    const jobs = dbMock.getJobListings();
-    
-    const enriched = rawApps.map(app => {
-      const job = jobs.find(j => j.id === app.jobId);
-      return { app, job };
-    });
-    
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setEnrichedApps(enriched);
-    setLoading(false);
+    async function loadApplications() {
+      try {
+        const res = await api.getApplications();
+        const enriched = (res.applications || []).map((app: any) => ({
+          app,
+          job: app.job,
+        }));
+        setEnrichedApps(enriched);
+        setLoading(false);
+      } catch (err) {
+        console.error("Applications load error:", err);
+        setLoading(false);
+      }
+    }
+    loadApplications();
   }, []);
 
   if (loading) {

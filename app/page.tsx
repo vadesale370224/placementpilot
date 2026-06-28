@@ -7,20 +7,15 @@ export default function Home() {
   const router = useRouter();
 
   const handleStudentClick = () => {
-    const profile = dbMock.getProfile();
-    if (profile) {
-      router.push("/dashboard");
-    } else {
-      router.push("/onboarding");
-    }
+    router.push("/login?role=candidate");
   };
-
-  const handleRecruiterClick = () => {
-    router.push("/recruiter/login");
+ 
+   const handleRecruiterClick = () => {
+    router.push("/login?role=recruiter");
   };
 
   return (
-    <div className="min-h-screen bg-[#060212] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans select-none selection:bg-violet-500/30">
+    <div className="min-h-screen bg-[#060212] text-white flex flex-col items-center justify-center p-6 relative overflow-x-hidden overflow-y-auto font-sans select-none selection:bg-violet-500/30">
       {/* Background gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-violet-600/10 rounded-full blur-[120px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-500/10 rounded-full blur-[120px]" />

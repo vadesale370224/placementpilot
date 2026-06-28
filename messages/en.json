@@ -7,6 +7,31 @@
     "onboarding": "Onboarding",
     "language": "Language"
   },
+  "sidebar": {
+    "navigation": "Navigation",
+    "dashboard": "Dashboard",
+    "profile": "My Profile",
+    "onboarding": "Onboarding",
+    "passport": "Skill Passport",
+    "resume": "Resume Analyzer",
+    "jobs": "Job Matches",
+    "jobsForYou": "Jobs For You",
+    "coach": "AI Interview Coach",
+    "applications": "Applications",
+    "settings": "Settings",
+    "personalMatches": "🎯 Personal matches will appear here based on your readiness score."
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}",
+    "recentMatches": "Recent Matches",
+    "skillsCount": "{count} Skills",
+    "readiness": "Readiness: {score}%",
+    "matchesCount": "{count} Matches",
+    "basedOn": "Based on location & language",
+    "sessionsCount": "{count} Sessions",
+    "practiceVocal": "Practice vocal answers now",
+    "readyText": "Your Placement Pilot AI assistant is ready. Complete mock interviews with your AI coach to boost your Skill Passport readiness score and access top matches!"
+  },
   "onboarding": {
     "title": "Welcome to Placement Pilot",
     "subtitle": "Let's set up your voice-first multilingual profile in under 2 minutes.",
@@ -18,7 +43,15 @@
     "stopRecording": "Stop Recording",
     "submitting": "Creating Profile...",
     "submit": "Submit and Build Profile",
-    "placeholderState": "Choose a State in India"
+    "placeholderState": "Choose a State in India",
+    "tellUs": "Tell us about yourself",
+    "tellUsHelp": "Enter your contact details and home state to matching jobs nearby.",
+    "voiceIntroHelp": "Introduce yourself in your preferred language to extract verified skills immediately.",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
+    "back": "← Back",
+    "continue": "Continue →",
+    "nextStep": "Next Step →"
   },
   "passport": {
     "title": "Your Skill Passport",
@@ -35,10 +68,22 @@
       "AI_VERIFIED": "AI Verified",
       "INSTITUTE_VERIFIED": "Institute Verified",
       "EMPLOYER_VERIFIED": "Employer Verified"
-    }
+    },
+    "mockInterviewBtn": "🎙️ AI Mock Interview",
+    "jobsBtn": "💼 Job Matches",
+    "downloadBtn": "Download Passport",
+    "downloadedBtn": "Downloaded!",
+    "shareBtn": "Share Passport",
+    "sharedBtn": "Link Copied!",
+    "jobReady": "Job Ready",
+    "goldPartner": "⚡ Employability Tier: Gold Partner",
+    "cancel": "Cancel",
+    "add": "Add",
+    "skillNameLabel": "Skill Name",
+    "proficiencyLabel": "Proficiency"
   },
   "jobs": {
-    "title": "Multilingual Job Matches",
+    "title": "Jobs Recommended For You",
     "subtitle": "AI-matched jobs based on your skills, state, and language preferences.",
     "matchScore": "Match Score",
     "requiredLanguages": "Required Languages",
@@ -46,7 +91,24 @@
     "explanationTitle": "AI Match Explanation",
     "noMatches": "No jobs matching your profile yet.",
     "applyNow": "Apply Now",
-    "applied": "Applied"
+    "applied": "Applied",
+    "searchKeyword": "Search keyword",
+    "location": "Location",
+    "roleCategory": "Role Category",
+    "allCategories": "All Categories",
+    "minSalary": "Min Salary (Monthly)",
+    "noMinimum": "No Minimum",
+    "minMatchStrength": "Minimum AI Match Strength",
+    "allMatchLevels": "All Match levels",
+    "above70": "Above 70% Match",
+    "above80": "Above 80% Match",
+    "above90": "Above 90% Match",
+    "salaryLabel": "₹{val} / month",
+    "noJobsSearch": "No jobs match your search parameters. Try resetting filters.",
+    "locationLabel": "📍 Location",
+    "salaryRangeLabel": "💰 Salary Range",
+    "reqLanguagesLabel": "🗣️ Required Languages",
+    "matchedLabel": "Matched:"
   },
   "coach": {
     "title": "AI Interview Coach",
@@ -61,7 +123,16 @@
     "weaknesses": "Areas of Improvement",
     "overallScore": "Interview Performance Score",
     "nextQuestion": "Next Question",
-    "finishSession": "Finish and Save to Passport"
+    "finishSession": "Finish and Save to Passport",
+    "readAloud": "🔊 Read Aloud",
+    "recordingAnswer": "Recording Answer: {time}s",
+    "speakAnswer": "🎙️ Speak Your Answer",
+    "clickVoice": "Click to activate voice input",
+    "vocalTranscript": "Your Vocal Transcript",
+    "performanceScore": "Performance Score:",
+    "strengthsTitle": "Strengths",
+    "weaknessesTitle": "Areas of Improvement",
+    "detailedFeedbackTitle": "Detailed Feedback"
   },
   "general": {
     "back": "Back",

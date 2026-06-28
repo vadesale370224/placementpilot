@@ -56,10 +56,18 @@ export default function RecruiterLayout({
 
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.push("/")}
-            className="px-4 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 text-xs font-bold transition cursor-pointer"
+            onClick={async () => {
+              try {
+                const { api } = await import("@/lib/api");
+                await api.logout();
+                window.location.href = "/login?role=recruiter";
+              } catch (err) {
+                console.error("Logout failed:", err);
+              }
+            }}
+            className="px-4 py-2 rounded-xl bg-red-505/10 hover:bg-red-650 hover:text-white border border-red-500/20 text-xs font-bold transition cursor-pointer"
           >
-            Exit Workspace
+            Logout
           </button>
           <div className="flex items-center gap-2 border border-white/10 bg-white/[0.03] py-1.5 px-3 rounded-full">
             <div className="w-6 h-6 rounded-full bg-violet-600 flex items-center justify-center font-bold text-xs">
@@ -125,7 +133,7 @@ export default function RecruiterLayout({
         </aside>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           {children}
         </div>
       </div>

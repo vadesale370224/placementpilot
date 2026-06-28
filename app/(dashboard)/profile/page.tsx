@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { dbMock, MockProfile, MockSkillPassport } from "@/lib/dbMock";
+import { MockProfile, MockSkillPassport } from "@/lib/dbMock";
 import { setLocale } from "@/lib/i18n";
 import { useLocale } from "next-intl";
+import { calculateProfileCompletion, getProfileCompletionBadge } from "@/lib/profile-utils";
+import { api } from "@/lib/api";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -20,66 +22,116 @@ export default function ProfilePage() {
   const [bio, setBio] = useState("");
   const [state, setState] = useState("");
   
-  // Education fields (defaults since onboarding was basic)
-  const [collegeName, setCollegeName] = useState("Government ITI College");
-  const [degree, setDegree] = useState("ITI Certification");
-  const [branch, setBranch] = useState("Electrical / Electrician");
-  const [year, setYear] = useState("2026");
-  const [cgpa, setCgpa] = useState("8.2");
+  // Education fields (starts empty, no fake details)
+  const [collegeName, setCollegeName] = useState("");
+  const [degree, setDegree] = useState("");
+  const [branch, setBranch] = useState("");
+  const [year, setYear] = useState("");
+  const [cgpa, setCgpa] = useState("");
 
   // Career fields
-  const [preferredRole, setPreferredRole] = useState("ITI Electrician");
-  const [preferredLocation, setPreferredLocation] = useState("Mumbai, Maharashtra");
-  const [expectedSalary, setExpectedSalary] = useState("₹20,000 - ₹25,000 / month");
-  const [employmentType, setEmploymentType] = useState("Full-time");
+  const [preferredRole, setPreferredRole] = useState("");
+  const [preferredLocation, setPreferredLocation] = useState("");
+  const [expectedSalary, setExpectedSalary] = useState("");
+  const [employmentType, setEmploymentType] = useState("");
+  const [resumeUrl, setResumeUrl] = useState("");
 
   // Settings
   const [notifsEnabled, setNotifsEnabled] = useState(true);
 
+  // Stats states
+  const [applicationsCount, setApplicationsCount] = useState(0);
+  const [sessionsCount, setSessionsCount] = useState(0);
+
   useEffect(() => {
-    const activeProfile = dbMock.getProfile();
-    const activePassport = dbMock.getSkillPassport();
+    async function loadProfileData() {
+      try {
+        const res = await api.getProfile();
+        if (!res || !res.profile) {
+          router.push("/onboarding");
+          return;
+        }
 
-    if (!activeProfile) {
-      router.push("/onboarding");
-      return;
+        const activeProfile = res.profile;
+        setProfile(activeProfile);
+        setPassport(res.passport);
+
+        setFullName(activeProfile.fullName || "");
+        setPhone(activeProfile.phone || "");
+        setBio(activeProfile.bio || "");
+        setState(activeProfile.state || "");
+        setCollegeName(activeProfile.collegeName || "");
+        setDegree(activeProfile.degree || "");
+        setBranch(activeProfile.branch || "");
+        setYear(activeProfile.year || "");
+        setCgpa(activeProfile.cgpa || "");
+        setPreferredRole(activeProfile.preferredRole || "");
+        setPreferredLocation(activeProfile.preferredLocation || "");
+        setExpectedSalary(activeProfile.expectedSalary || "");
+        setEmploymentType(activeProfile.employmentType || "");
+        setResumeUrl(activeProfile.resumeUrl || "");
+
+        const appsRes = await api.getApplications().catch(() => ({ applications: [] }));
+        setApplicationsCount(appsRes.applications?.length || 0);
+
+        const sessionsRes = await api.getInterviewSessions().catch(() => ({ sessions: [] }));
+        setSessionsCount(sessionsRes.sessions?.length || 0);
+      } catch (err) {
+        console.error("Profile load error:", err);
+        router.push("/onboarding");
+      }
     }
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProfile(activeProfile);
-    setPassport(activePassport);
-
-    setFullName(activeProfile.fullName);
-    setPhone(activeProfile.phone);
-    setBio(activeProfile.bio);
-    setState(activeProfile.state);
+    loadProfileData();
   }, [router]);
 
   const handleSave = () => {
     if (!profile) return;
-    const updated: MockProfile = {
-      ...profile,
+    const updated = {
       fullName,
       phone,
       bio,
       state,
+      collegeName,
+      degree,
+      branch,
+      year,
+      cgpa,
+      preferredRole,
+      preferredLocation,
+      expectedSalary,
+      employmentType,
+      resumeUrl,
     };
-    dbMock.saveProfile(updated);
-    setProfile(updated);
-    setIsEditing(false);
-    
-    // Trigger header refresh by reloading or just setting state
-    router.refresh();
+
+    api.saveProfile(updated)
+      .then((res) => {
+        if (res.success && res.profile) {
+          setProfile(res.profile);
+        }
+        setIsEditing(false);
+        router.refresh();
+      })
+      .catch((err) => {
+        console.error("Save profile error:", err);
+      });
   };
 
   const handleLogout = () => {
-    dbMock.clearAll();
-    document.cookie = "pp_profile_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
-    window.location.href = "/";
+    api.logout()
+      .then(() => {
+        window.location.href = "/login";
+      })
+      .catch((err) => {
+        console.error("Logout error:", err);
+        window.location.href = "/login";
+      });
   };
 
   const handleLanguageChange = (lang: string) => {
     setLocale(lang);
+    if (profile) {
+      api.saveProfile({ preferredLanguage: lang }).catch(() => {});
+    }
   };
 
   if (!profile || !passport) {
@@ -90,8 +142,8 @@ export default function ProfilePage() {
     );
   }
 
-  const applicationsCount = dbMock.getApplications().length;
-  const sessionsCount = dbMock.getInterviewSessions().length;
+  const completionPercent = calculateProfileCompletion(profile, passport);
+  const badge = getProfileCompletionBadge(completionPercent);
 
   return (
     <main className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 animate-fadeIn max-w-6xl mx-auto">
@@ -110,12 +162,21 @@ export default function ProfilePage() {
             <p className="text-white/80 text-sm font-semibold max-w-lg leading-relaxed">
               {bio || "No biography added yet."}
             </p>
-            <div className="flex flex-wrap gap-2 pt-1 justify-center sm:justify-start">
+            <div className="flex flex-wrap gap-2 pt-1 justify-center sm:justify-start items-center">
               <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/10">
                 📍 {state}
               </span>
               <span className="px-3 py-1 bg-white/15 rounded-full text-xs font-bold border border-white/10">
                 ⭐ Gold Tier
+              </span>
+              <span className={`px-3 py-1 rounded-full text-xs font-extrabold border ${
+                completionPercent < 50 
+                  ? "bg-red-500/20 text-red-300 border-red-500/40" 
+                  : completionPercent <= 80 
+                  ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/40" 
+                  : "bg-emerald-500/20 text-emerald-350 border-emerald-500/40"
+              }`}>
+                {badge.text} ({completionPercent}%)
               </span>
             </div>
           </div>
@@ -350,6 +411,68 @@ export default function ProfilePage() {
                     🛠️ {s.name} <span className="text-[10px] opacity-60">({s.proficiency})</span>
                   </span>
                 ))}
+              </div>
+            </div>
+
+            {/* Section 5: Documents */}
+            <div className="space-y-4 pt-4 border-t border-white/5">
+              <h3 className="text-sm font-black text-violet-400 uppercase tracking-widest font-mono">Documents</h3>
+              <div className="p-4 bg-white/5 border border-white/5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="space-y-1">
+                  <span className="text-xs text-gray-450 font-bold block">Resume / CV</span>
+                  {resumeUrl ? (
+                    <span className="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                      📄 {resumeUrl}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-red-400 font-semibold block">No resume uploaded yet.</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    id="resumeUpload"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setResumeUrl(file.name);
+                        api.saveProfile({ resumeUrl: file.name })
+                          .then((res) => {
+                            if (res.success && res.profile) {
+                              setProfile(res.profile);
+                            }
+                            router.refresh();
+                          })
+                          .catch((err) => console.error("Resume upload error:", err));
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="resumeUpload"
+                    className="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold rounded-xl cursor-pointer transition shadow-md shadow-violet-500/10"
+                  >
+                    {resumeUrl ? "Change Resume" : "Upload Resume"}
+                  </label>
+                  {resumeUrl && (
+                    <button
+                      onClick={() => {
+                        setResumeUrl("");
+                        api.saveProfile({ resumeUrl: "" })
+                          .then((res) => {
+                            if (res.success && res.profile) {
+                              setProfile(res.profile);
+                            }
+                            router.refresh();
+                          })
+                          .catch((err) => console.error("Resume delete error:", err));
+                      }}
+                      className="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-bold rounded-xl transition"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

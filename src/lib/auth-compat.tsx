@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { dbMock } from "@/lib/dbMock";
+import React, { useEffect, useState } from "react";
+import { useUserStore } from "@/store/user-store";
 
 // Set to true to bypass Clerk entirely
 export const BYPASS_CLERK = true;
@@ -11,16 +11,63 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useUser() {
-  const profile = typeof window !== "undefined" ? dbMock.getProfile() : null;
-  const isSignedIn = !!profile;
+  const { user, setUser, clearUser } = useUserStore();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.profile) {
+            setUser({
+              id: data.user.id,
+              email: data.user.email || "",
+              firstName: data.profile.fullName.split(" ")[0] || "",
+              lastName: data.profile.fullName.split(" ").slice(1).join(" ") || "",
+              imageUrl: data.profile.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
+              fullName: data.profile.fullName,
+              phone: data.profile.phone,
+              role: data.user.role,
+              profileId: data.profile.id,
+            } as any);
+          } else {
+            setUser({
+              id: data.user.id,
+              email: data.user.email || "",
+              firstName: "User",
+              lastName: "",
+              imageUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
+              fullName: "User",
+              role: data.user.role,
+            } as any);
+          }
+        } else {
+          clearUser();
+        }
+      } catch (err) {
+        console.error("Failed to load authenticated user:", err);
+      } finally {
+        setIsLoaded(true);
+      }
+    }
+
+    loadUser();
+  }, [setUser, clearUser]);
+
+  const isSignedIn = !!user;
+
   return {
-    isLoaded: true,
+    isLoaded,
     isSignedIn,
-    user: isSignedIn && profile ? {
-      id: profile.id,
-      fullName: profile.fullName,
-      primaryEmailAddress: { emailAddress: profile.phone ? `${profile.id}@example.com` : "" },
-      imageUrl: profile.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
+    user: isSignedIn && user ? {
+      id: user.id,
+      fullName: (user as any).fullName || `${user.firstName} ${user.lastName}`,
+      primaryEmailAddress: { emailAddress: user.email },
+      imageUrl: user.imageUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
+      role: (user as any).role,
+      profileId: (user as any).profileId,
     } : null,
   };
 }
@@ -30,7 +77,7 @@ export function UserButton() {
 
   const handleAuthClick = () => {
     if (!isSignedIn) {
-      window.location.href = "/onboarding";
+      window.location.href = "/login";
     } else {
       window.location.href = "/profile";
     }
@@ -64,4 +111,3 @@ export function UserButton() {
     </div>
   );
 }
-

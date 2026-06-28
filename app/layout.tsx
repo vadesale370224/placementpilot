@@ -32,7 +32,7 @@ export default async function RootLayout({
     <ClerkProvider>
       <html
         lang={locale}
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
       >
         <body className="min-h-full flex flex-col">
           <NextIntlClientProvider messages={messages} locale={locale}>

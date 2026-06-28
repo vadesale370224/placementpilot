@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { dbMock } from "@/lib/dbMock";
 import { setLocale } from "@/lib/i18n";
 import { useLocale } from "next-intl";
+import { api } from "@/lib/api";
 
 export default function SettingsPage() {
   const currentLocale = useLocale();
@@ -11,13 +11,14 @@ export default function SettingsPage() {
 
   const handleLanguageChange = (lang: string) => {
     setLocale(lang);
+    api.saveProfile({ preferredLanguage: lang }).catch(() => {});
   };
 
   const handleReset = () => {
-    if (confirm("Are you sure you want to clear all local data? This action is irreversible.")) {
-      dbMock.clearAll();
-      document.cookie = "pp_profile_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
-      window.location.href = "/";
+    if (confirm("Are you sure you want to log out and clear your session?")) {
+      api.logout().then(() => {
+        window.location.href = "/";
+      });
     }
   };
 

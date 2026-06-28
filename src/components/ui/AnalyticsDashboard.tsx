@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { dbMock } from "@/lib/dbMock";
+import { api } from "@/lib/api";
 
 interface MLReadinessData {
   score: number;
@@ -50,22 +50,27 @@ export default function AnalyticsDashboard() {
   useEffect(() => {
     async function fetchPredictions() {
       try {
-        const profile = dbMock.getProfile();
-        const passport = dbMock.getSkillPassport();
-        const sessions = dbMock.getInterviewSessions();
+        const profileRes = await api.getProfile().catch(() => null);
+        const sessionsRes = await api.getInterviewSessions().catch(() => ({ sessions: [] }));
 
-        if (!profile || !passport) {
+        if (!profileRes || !profileRes.profile || !profileRes.passport) {
           setError("Onboarding profile required to view diagnostics.");
           setLoading(false);
           return;
         }
 
-        // Map candidate details to realistic model features
-        const isITI = profile.fullName.toLowerCase().includes("rahul") || profile.bio?.toLowerCase().includes("iti");
+        const profile = profileRes.profile;
+        const passport = profileRes.passport;
+        const sessions = sessionsRes.sessions || [];
+
+        // Map candidate details to realistic model features dynamically
+        const isITI = (profile.degree?.toLowerCase().includes("iti") || 
+                       profile.branch?.toLowerCase().includes("electrical") || 
+                       profile.branch?.toLowerCase().includes("electrician")) ?? false;
         
         const payload = {
-          cgpa: isITI ? 8.2 : 8.8,
-          branch: isITI ? "Electrical" : "Computer Science",
+          cgpa: profile.cgpa ? parseFloat(profile.cgpa) : (isITI ? 8.2 : 8.8),
+          branch: profile.branch || (isITI ? "Electrical" : "Computer Science"),
           projects_count: passport.skills.length,
           internships_count: isITI ? 1 : 2,
           resume_score: isITI ? 75.0 : 85.0,
@@ -100,7 +105,7 @@ export default function AnalyticsDashboard() {
               method: "POST",
               headers,
               body: JSON.stringify({
-                student_skills: passport.skills.map(s => s.name),
+                student_skills: (passport.skills as any[]).map((s: any) => s.name),
                 resume_text: profile.bio || "",
                 projects: ["Completed vocational certification project"],
                 job_description: "Looking for skilled candidates with good technical background and communication skills."
@@ -110,7 +115,7 @@ export default function AnalyticsDashboard() {
               method: "POST",
               headers,
               body: JSON.stringify({
-                current_skills: passport.skills.map(s => s.name),
+                current_skills: (passport.skills as any[]).map((s: any) => s.name),
                 target_company_requirements: targetRequirements
               })
             }),
@@ -118,7 +123,7 @@ export default function AnalyticsDashboard() {
               method: "POST",
               headers,
               body: JSON.stringify({
-                mock_interview_scores: sessions.map(s => s.feedback?.score || 70.0),
+                mock_interview_scores: sessions.map((s: any) => s.feedback?.score || 70.0),
                 communication_score: payload.communication_score,
                 technical_score: passport.readinessScore,
                 confidence_score: speechPayload.confidence_metrics,
@@ -155,7 +160,7 @@ export default function AnalyticsDashboard() {
 
         if (!matchRes) {
           // Cosine similarity token-based replica
-          const matching = passport.skills.map(s => s.name).filter(s => targetRequirements.includes(s));
+          const matching = (passport.skills as any[]).map((s: any) => s.name).filter((s: string) => targetRequirements.includes(s));
           const missing = targetRequirements.filter(s => !matching.includes(s));
           const score = 40.0 + (matching.length / targetRequirements.length) * 55.0;
           matchRes = {
@@ -167,7 +172,7 @@ export default function AnalyticsDashboard() {
         }
 
         if (!gapRes) {
-          const matching = passport.skills.map(s => s.name).filter(s => targetRequirements.includes(s));
+          const matching = (passport.skills as any[]).map((s: any) => s.name).filter((s: string) => targetRequirements.includes(s));
           const missing = targetRequirements.filter(s => !matching.includes(s));
           const ranking: Record<string, string> = {};
           const time: Record<string, string> = {};

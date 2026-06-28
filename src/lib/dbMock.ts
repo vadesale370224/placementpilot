@@ -11,6 +11,20 @@ export interface MockProfile {
   languages: string[];
   state: string;
   isVerified: boolean;
+  collegeName?: string;
+  degree?: string;
+  branch?: string;
+  year?: string;
+  cgpa?: string;
+  preferredRole?: string;
+  preferredLocation?: string;
+  expectedSalary?: string;
+  employmentType?: string;
+  resumeUrl?: string;
+  originalTranscript?: string;
+  extractedFields?: string; // stringified JSON
+  extractionConfidence?: number;
+  onboardingCompleted?: boolean;
 }
 
 export interface MockSkill {
@@ -219,7 +233,6 @@ class DBMock {
     localStorage.removeItem("pp_interviews");
   }
 
-  // Preload ITI Electrician Candidate demo journey
   preloadDemoData(): void {
     const profileId = "prof-demo-iti";
     const demoProfile: MockProfile = {
@@ -230,7 +243,17 @@ class DBMock {
       preferredLanguage: "mr", // Start in Marathi
       languages: ["mr", "hi"],
       state: "Maharashtra",
-      isVerified: true
+      isVerified: true,
+      collegeName: "Government ITI College",
+      degree: "ITI Certification",
+      branch: "Electrical / Electrician",
+      year: "2026",
+      cgpa: "8.2",
+      preferredRole: "ITI Electrician",
+      preferredLocation: "Mumbai, Maharashtra",
+      expectedSalary: "₹20,000 - ₹25,000 / month",
+      employmentType: "Full-time",
+      onboardingCompleted: true,
     };
     this.saveProfile(demoProfile);
 

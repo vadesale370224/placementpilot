@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { dbMock, MockProfile, MockSkillPassport, MockSkill } from "@/lib/dbMock";
+import { MockProfile, MockSkillPassport, MockSkill } from "@/lib/dbMock";
+import { calculateProfileCompletion, getProfileCompletionBadge } from "@/lib/profile-utils";
+import { api } from "@/lib/api";
+import QRCode from "qrcode";
 
 export default function SkillPassportPage() {
   const t = useTranslations("passport");
@@ -12,6 +15,7 @@ export default function SkillPassportPage() {
 
   const [profile, setProfile] = useState<MockProfile | null>(null);
   const [passport, setPassport] = useState<MockSkillPassport | null>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
 
   const [newSkillName, setNewSkillName] = useState("");
   const [newSkillLevel, setNewSkillLevel] = useState("Intermediate");
@@ -21,18 +25,32 @@ export default function SkillPassportPage() {
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   useEffect(() => {
-    const activeProfile = dbMock.getProfile();
-    const activePassport = dbMock.getSkillPassport();
-
-    if (!activeProfile) {
-      router.push("/onboarding");
-      return;
+    async function loadPassport() {
+      try {
+        const res = await api.getProfile();
+        if (!res || !res.profile) {
+          router.push("/onboarding");
+          return;
+        }
+        setProfile(res.profile);
+        setPassport(res.passport);
+      } catch (err) {
+        console.error("Passport load error:", err);
+        router.push("/onboarding");
+      }
     }
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setProfile(activeProfile);
-    setPassport(activePassport);
+    loadPassport();
   }, [router]);
+
+  useEffect(() => {
+    if (profile) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+      const url = `${appUrl}/passport/${profile.id}`;
+      QRCode.toDataURL(url, { margin: 1, width: 256 })
+        .then((dataUrl) => setQrCodeUrl(dataUrl))
+        .catch((err) => console.error("QR Code generation failed", err));
+    }
+  }, [profile]);
 
   const handleAddSkill = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,14 +65,19 @@ export default function SkillPassportPage() {
       }
     ];
 
-    const updatedPassport: MockSkillPassport = {
-      ...passport,
-      skills: updatedSkills,
-      readinessScore: Math.min(100, parseFloat((passport.readinessScore + 1.5).toFixed(1)))
-    };
+    const updatedScore = Math.min(100, parseFloat((passport.readinessScore + 1.5).toFixed(1)));
 
-    dbMock.saveSkillPassport(updatedPassport);
-    setPassport(updatedPassport);
+    api.saveSkillPassport({
+      skills: updatedSkills,
+      readinessScore: updatedScore
+    }).then((res) => {
+      if (res.success && res.passport) {
+        setPassport(res.passport);
+      }
+    }).catch((err) => {
+      console.error("Failed to save skill passport:", err);
+    });
+
     setNewSkillName("");
     setShowAddForm(false);
   };
@@ -87,6 +110,9 @@ export default function SkillPassportPage() {
   const circumference = normalizedRadius * 2 * Math.PI;
   const strokeDashoffset = circumference - (passport.readinessScore / 100) * circumference;
 
+  const completionPercent = calculateProfileCompletion(profile, passport);
+  const badge = getProfileCompletionBadge(completionPercent);
+
   return (
     <main className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 animate-fadeIn">
       {/* Header */}
@@ -95,9 +121,20 @@ export default function SkillPassportPage() {
           <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
             {t("title")}
           </h1>
-          <p className="text-gray-550 dark:text-gray-400 mt-1 font-semibold text-sm">
-            {t("subtitle")}
-          </p>
+          <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+            <p className="text-gray-550 dark:text-gray-400 font-semibold text-sm">
+              {t("subtitle")}
+            </p>
+            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${
+              completionPercent < 50 
+                ? "bg-red-500/20 text-red-400 border-red-500/30" 
+                : completionPercent <= 80 
+                ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" 
+                : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+            }`}>
+              {badge.text} ({completionPercent}%)
+            </span>
+          </div>
         </div>
         
         <div className="flex gap-3">
@@ -105,13 +142,13 @@ export default function SkillPassportPage() {
             onClick={() => router.push("/coach")}
             className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-750 hover:to-blue-750 text-white font-bold rounded-xl shadow-md hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
           >
-            🎙️ AI Mock Interview
+            {t("mockInterviewBtn")}
           </button>
           <button
             onClick={() => router.push("/jobs")}
             className="px-5 py-2.5 bg-gray-105 dark:bg-gray-850 hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-950 dark:text-gray-200 font-bold rounded-xl shadow-sm transition cursor-pointer"
           >
-            💼 {tNav("jobs")}
+            {t("jobsBtn")}
           </button>
         </div>
       </div>
@@ -186,12 +223,12 @@ export default function SkillPassportPage() {
               </div>
 
               {/* QR Code */}
-              <div className="w-14 h-14 bg-white p-1.5 rounded-xl flex flex-col justify-between items-center select-none shadow">
-                <div className="grid grid-cols-5 gap-0.5 w-full h-full">
-                  {[1,0,1,1,1, 1,1,0,0,1, 0,0,1,1,0, 1,0,1,0,1, 1,1,1,0,1].map((dot, idx) => (
-                    <div key={idx} className={`w-full h-full rounded-[1px] ${dot ? "bg-gray-900" : "bg-transparent"}`} />
-                  ))}
-                </div>
+              <div className="w-14 h-14 bg-white p-1 rounded-xl flex items-center justify-center select-none shadow">
+                {qrCodeUrl ? (
+                  <img src={qrCodeUrl} alt="QR Code" className="w-full h-full object-contain" />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 animate-pulse rounded" />
+                )}
               </div>
             </div>
 
@@ -214,12 +251,12 @@ export default function SkillPassportPage() {
               <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              <span>{downloadSuccess ? "Downloaded!" : "Download Passport"}</span>
+              <span>{downloadSuccess ? t("downloadedBtn") : t("downloadBtn")}</span>
             </button>
             <button
               onClick={() => {
                 if (profile) {
-                  navigator.clipboard.writeText(`https://placementpilot.in/passport/${profile.id}`);
+                  navigator.clipboard.writeText(`${window.location.origin}/passport/${profile.id}`);
                 }
                 setShareSuccess(true);
                 setTimeout(() => setShareSuccess(false), 2000);
@@ -229,7 +266,7 @@ export default function SkillPassportPage() {
               <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8.684 10.742l4.636-2.318a3 3 0 10-.224-2.614l-4.636 2.318a3 3 0 100 4.195l4.636 2.318a3 3 0 10.224-2.614l-4.636-2.318z" />
               </svg>
-              <span>{shareSuccess ? "Link Copied!" : "Share Passport"}</span>
+              <span>{shareSuccess ? t("sharedBtn") : t("shareBtn")}</span>
             </button>
           </div>
 
@@ -278,13 +315,13 @@ export default function SkillPassportPage() {
                   {passport.readinessScore}%
                 </span>
                 <span className="text-[9px] font-black text-emerald-500 tracking-wider uppercase mt-0.5">
-                  Job Ready
+                  {t("jobReady")}
                 </span>
               </div>
             </div>
 
             <div className="px-4 py-1.5 bg-emerald-500/10 rounded-full text-[10px] font-black text-emerald-500 border border-emerald-500/20">
-              ⚡ Employability Tier: Gold Partner
+              {t("goldPartner")}
             </div>
           </div>
         </div>
@@ -300,7 +337,7 @@ export default function SkillPassportPage() {
                 onClick={() => setShowAddForm(!showAddForm)}
                 className="text-sm font-bold text-violet-600 dark:text-violet-400 flex items-center gap-1 hover:underline cursor-pointer"
               >
-                {showAddForm ? "Cancel" : `➕ ${t("addSkill")}`}
+                {showAddForm ? t("cancel") : `➕ ${t("addSkill")}`}
               </button>
             </div>
 
@@ -308,7 +345,7 @@ export default function SkillPassportPage() {
             {showAddForm && (
               <form onSubmit={handleAddSkill} className="p-4 bg-white/50 dark:bg-black/10 border border-gray-200 dark:border-gray-800 rounded-2xl flex flex-col sm:flex-row gap-4 items-end animate-fadeIn">
                 <div className="flex-1 flex flex-col gap-1.5 w-full">
-                  <span className="text-[10px] font-black text-gray-500 uppercase font-mono">Skill Name</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase font-mono">{t("skillNameLabel")}</span>
                   <input
                     type="text"
                     required
@@ -319,7 +356,7 @@ export default function SkillPassportPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5 w-full sm:w-44">
-                  <span className="text-[10px] font-black text-gray-500 uppercase font-mono">Proficiency</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase font-mono">{t("proficiencyLabel")}</span>
                   <select
                     value={newSkillLevel}
                     onChange={(e) => setNewSkillLevel(e.target.value)}
@@ -334,7 +371,7 @@ export default function SkillPassportPage() {
                   type="submit"
                   className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 text-white font-bold rounded-xl text-sm shadow cursor-pointer w-full sm:w-auto"
                 >
-                  Add
+                  {t("add")}
                 </button>
               </form>
             )}

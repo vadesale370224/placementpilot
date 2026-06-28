@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { dbMock } from "@/lib/dbMock";
+import { useTranslations } from "next-intl";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -10,28 +10,29 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isCollapsed, isMobileOpen, onCloseMobile }: SidebarProps) {
+  const t = useTranslations("sidebar");
   const pathname = usePathname();
   const [hasProfile, setHasProfile] = useState(false);
 
   useEffect(() => {
-    // Check if user has completed onboarding profile
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setHasProfile(!!dbMock.getProfile());
+    // Check if user has completed onboarding profile via cookie presence
+    const hasProfileCookie = typeof document !== "undefined" && document.cookie.split("; ").some(row => row.startsWith("pp_profile_id="));
+    setHasProfile(hasProfileCookie);
   }, [pathname]);
 
   const menuItems = [
-    { href: "/dashboard", label: "Dashboard", icon: "📊" },
+    { href: "/dashboard", label: t("dashboard"), icon: "📊" },
     ...(hasProfile 
-      ? [{ href: "/profile", label: "My Profile", icon: "👤" }] 
-      : [{ href: "/onboarding", label: "Onboarding", icon: "👤" }]
+      ? [{ href: "/profile", label: t("profile"), icon: "👤" }] 
+      : [{ href: "/onboarding", label: t("onboarding"), icon: "👤" }]
     ),
-    { href: "/passport", label: "Skill Passport", icon: "🪪" },
-    { href: "/resume", label: "Resume Analyzer", icon: "📄" },
-    { href: "/jobs", label: "Job Matches", icon: "💼" },
-    { href: "/jobs?filter=recommended", label: "Jobs For You", icon: "🎯" },
-    { href: "/coach", label: "AI Interview Coach", icon: "🎙️" },
-    { href: "/applications", label: "Applications", icon: "📝" },
-    { href: "/settings", label: "Settings", icon: "⚙️" },
+    { href: "/passport", label: t("passport"), icon: "🪪" },
+    { href: "/resume", label: t("resume"), icon: "📄" },
+    { href: "/jobs", label: t("jobs"), icon: "💼" },
+    { href: "/jobs?filter=recommended", label: t("jobsForYou"), icon: "🎯" },
+    { href: "/coach", label: t("coach"), icon: "🎙️" },
+    { href: "/applications", label: t("applications"), icon: "📝" },
+    { href: "/settings", label: t("settings"), icon: "⚙️" },
   ];
 
   return (
@@ -55,7 +56,7 @@ export default function Sidebar({ isCollapsed, isMobileOpen, onCloseMobile }: Si
             px-4 py-3 mb-4 text-[10px] font-bold text-violet-500 dark:text-violet-400 uppercase tracking-widest font-mono border-b border-gray-100 dark:border-gray-800
             ${isCollapsed ? "text-center px-0 font-light" : ""}
           `}>
-            {isCollapsed ? "NAV" : "Navigation"}
+            {isCollapsed ? "NAV" : t("navigation")}
           </div>
           
           <div className="space-y-2">
@@ -89,10 +90,10 @@ export default function Sidebar({ isCollapsed, isMobileOpen, onCloseMobile }: Si
           {!isCollapsed && (
             <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
               <div className="px-4 text-[10px] font-bold text-blue-550 dark:text-blue-400 uppercase tracking-widest font-mono">
-                Jobs For You
+                {t("jobsForYou")}
               </div>
               <div className="mx-2 p-4 bg-blue-500/5 border border-blue-500/10 rounded-2xl text-[11px] text-gray-500 dark:text-gray-400 font-semibold leading-relaxed">
-                🎯 Personal matches will appear here based on your readiness score.
+                {t("personalMatches")}
               </div>
             </div>
           )}
